@@ -16,7 +16,7 @@
 	</properties>
 
 	<modules> 
-		<module>jun_api_service_online</module> 
+		<module>jun_api_service_online</module>
 		<module>jun_api_service_groovy</module>
 	</modules>
 

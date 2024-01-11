@@ -42,7 +42,7 @@ The project is based on SpringBoot+Groovy to dynamically generate APIs and publi
 <dependency>
     <groupId>io.github.wujun728</groupId>
     <artifactId>jun-groovy-api-spring-boot-starter</artifactId>
-    <version>1.0.8.3</version>
+  <version>1.0.9</version>
 </dependency>
 ```
 - 参考jun_springboot_api_service中jun_springboot_groovy_api项目嵌入模块

@@ -13,7 +13,7 @@
         <dependency>
             <groupId>io.github.wujun728</groupId>
             <artifactId>jun-common</artifactId>
-            <version>1.0.8.3</version>
+            <version>1.0.9</version>
         </dependency>
         <!--shiro 依赖-->
         <dependency>

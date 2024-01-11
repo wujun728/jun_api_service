@@ -35,13 +35,7 @@ import org.snaker.engine.helper.StringHelper;
 import org.snaker.engine.model.ProcessModel;
 import org.snaker.engine.model.TaskModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 //import com.jun.plugin.system.entity.SysUser;
 //import com.jun.plugin.system.mapper.SysUserMapper;
@@ -134,25 +128,30 @@ public class SnakerflowFacetsController {
 	 * @param processId
 	 * @return
 	 */
-	//@GetMapping(value = "/process/modelJson"/*, produces = "application/json;charset=UTF-8"*/)
-	@GetMapping(value = "/process/modelJson", produces = "text/plain;charset=UTF-8")
+	@GetMapping(value = "/process/modelJson"/*, produces = "application/json;charset=UTF-8"*/)
+//	@GetMapping(value = "/process/modelJson", produces = "text/plain;charset=UTF-8")
 	@ApiOperation(value = "根据流程定义名称获取流程定义json", tags = "流程引擎-流程")
 	// @Metrics
-	public String getProcess(@RequestParam(required = false) String processId) {
+	public void getProcess(@RequestParam(required = false) String processId) throws IOException {
 		HttpServletResponse response = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getResponse();
 		assert response != null;
-		response.setCharacterEncoding("UTF-8");
+		String json = "";
 		if (StrUtil.isBlank(processId)) {
-			return "";
+			json =  "";
 		}
 		Process process = snakerEngineFacets.getEngine().process().getProcessById(processId);
 		AssertHelper.notNull(process);
 		ProcessModel processModel = process.getModel();
 		if (processModel != null) {
-			String json = SnakerHelper.getModelJson(processModel);
-			return json;
+			json = SnakerHelper.getModelJson(processModel);
+
+//			return json;
 		}
-		return null;
+		response.setStatus(200);
+		response.setContentType("application/json");
+		response.setCharacterEncoding("utf-8");
+		response.getWriter().print(json);
+//		return null;
 	}
 
 	/**

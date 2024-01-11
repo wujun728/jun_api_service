@@ -18,7 +18,7 @@
 		<module>system</module>
 		<module>plugins</module>
 		<module>modules</module>
-		<module>web</module>
+		<module>admin</module>
 
 	</modules>
 
@@ -29,6 +29,11 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>io.github.wujun728</groupId>
+			<artifactId>jun-common</artifactId>
+			<version>1.0.9</version>
 		</dependency>
 		<!-- <dependency>
 			<groupId>junit</groupId>

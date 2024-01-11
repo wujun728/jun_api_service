@@ -50,7 +50,8 @@ public class SysFilesOssServiceImpl extends ServiceImpl<SysFilesOssMapper, SysFi
     @Override
     public Result saveFile(MultipartFile file) {
         //存储文件夹
-        String createTime = DateUtils.format(new Date(), DateUtils.DATEPATTERN);
+//        String createTime = DateUtils.format(new Date(), DateUtils.DATEPATTERN);
+        String createTime = DateUtils.dateTimeNow();
         String newPath = fileUploadProperties.getPath() + createTime + File.separator;
         File uploadDirectory = new File(newPath);
         if (uploadDirectory.exists()) {
