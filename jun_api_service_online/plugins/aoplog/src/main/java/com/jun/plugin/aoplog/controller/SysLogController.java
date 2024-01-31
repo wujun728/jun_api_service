@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.jun.plugin.aoplog.entity.SysLog;
 import com.jun.plugin.aoplog.service.LogService;
-import com.jun.plugin.common.utils.DataResult;
+import com.jun.plugin.common.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -31,7 +31,7 @@ public class SysLogController {
     @PostMapping("/logs")
     @ApiOperation(value = "分页查询系统操作日志接口")
     @RequiresPermissions("sys:log:list")
-    public DataResult pageInfo(@RequestBody SysLog vo) {
+    public Result pageInfo(@RequestBody SysLog vo) {
         LambdaQueryWrapper<SysLog> queryWrapper = Wrappers.lambdaQuery();
         if (!StringUtils.isEmpty(vo.getUsername())) {
             queryWrapper.like(SysLog::getUsername, vo.getUsername());
@@ -46,14 +46,14 @@ public class SysLogController {
             queryWrapper.lt(SysLog::getCreateTime, vo.getEndTime());
         }
         queryWrapper.orderByDesc(SysLog::getCreateTime);
-        return DataResult.success(logService.page(vo.getQueryPage(), queryWrapper));
+        return Result.success(logService.page(vo.getQueryPage(), queryWrapper));
     }
 
     @DeleteMapping("/logs")
     @ApiOperation(value = "删除日志接口")
     @RequiresPermissions("sys:log:deleted")
-    public DataResult deleted(@RequestBody List<String> logIds) {
+    public Result deleted(@RequestBody List<String> logIds) {
         logService.removeByIds(logIds);
-        return DataResult.success();
+        return Result.success();
     }
 }

@@ -3,6 +3,7 @@ package com.jun.plugin.aoplog.entity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jun.plugin.common.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -45,5 +46,10 @@ public class SysLog extends BaseEntity implements Serializable {
 
     @TableField(exist = false)
     private String endTime;
+
+    	public Page getQueryPage(){
+        Page page = new Page(getPage(), getLimit());
+        return page;
+    }
 
 }
