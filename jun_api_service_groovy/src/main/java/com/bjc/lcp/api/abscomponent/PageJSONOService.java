@@ -1,10 +1,13 @@
 package com.bjc.lcp.api.abscomponent;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.Page;
-import com.jfinal.plugin.activerecord.Record;
+//import com.jfinal.plugin.activerecord.Db;
+//import com.jfinal.plugin.activerecord.Page;
+//import com.jfinal.plugin.activerecord.Record;
 import com.jun.plugin.common.base.interfaces.AbstractExecutor;
+import com.jun.plugin.db.record.Db;
+import com.jun.plugin.db.record.Page;
+import com.jun.plugin.db.record.Record;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;

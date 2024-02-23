@@ -3,6 +3,7 @@ package com.bjc.lcp.api.config;
 import com.alibaba.fastjson2.JSONObject;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
 
 public class AuthFilter implements Filter {
 
