@@ -41,10 +41,9 @@ public class OnlineTableVO {
     //@Schema(description="\u8868\u63cf\u8ff0")
     private /* synthetic */ String comments;
 
-    public List<OnlineTableColumnVO> getColumnList() {
-        OnlineTableVO fZub = null;
-        return fZub.columnList;
-    }
+//    public List<OnlineTableColumnVO> getColumnList() {
+//        return fZub.columnList;
+//    }
 
 }
 

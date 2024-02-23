@@ -82,12 +82,12 @@ implements OnlineTableService {
     }
 
     @Override
-    public OnlineTableVO get(String GNqb) {
-        OnlineTableServiceImpl hNqb = this;
-        OnlineTableEntity kNqb = (OnlineTableEntity)((OnlineTableDao)hNqb.baseMapper).selectById((Serializable)((Object)GNqb));
-        OnlineTableVO JNqb = OnlineTableConvert.INSTANCE.convert(kNqb);
-        JNqb.setColumnList(hNqb.onlineTableColumnService.getByTableId(GNqb));
-        return JNqb;
+    public OnlineTableVO get(String tableId) {
+        OnlineTableServiceImpl onlineTableService = this;
+        OnlineTableEntity onlineTableEntity = onlineTableService.baseMapper.selectById(tableId);
+        OnlineTableVO onlineTableVO = OnlineTableConvert.INSTANCE.convert(onlineTableEntity);
+        onlineTableVO.setColumnList(onlineTableService.onlineTableColumnService.getByTableId(tableId));
+        return onlineTableVO;
     }
 
     private static boolean EP(int n) {

@@ -1,13 +1,10 @@
 package com.jun.plugin.quartz.utils;
 
 import com.jun.plugin.common.Result;
-import com.jun.plugin.common.config.CommonAutoConfig;
-//import com.jun.plugin.common.utils.SpringContextUtil;
 import com.jun.plugin.common.util.SpringContextUtil;
 import com.jun.plugin.quartz.entity.SysJobEntity;
 import com.jun.plugin.quartz.entity.SysJobLogEntity;
 import com.jun.plugin.quartz.service.SysJobLogService;
-import com.jun.plugin.rest.controller.RestController;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;

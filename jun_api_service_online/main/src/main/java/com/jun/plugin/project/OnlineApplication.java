@@ -26,9 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @EnableScheduling
 @SpringBootApplication(exclude = DruidDataSourceAutoConfigure.class) // 多数据源 (exclude = DruidDataSourceAutoConfigure.class)
-@MapperScan("com.jun.plugin.**.mapper")
+@MapperScan({"com.jun.plugin.**.mapper","com.jun.plugin.online.dao"})
 @ComponentScan(basePackages = {"com.jun.plugin.project","com.jun.plugin.common","com.jun.plugin.rest","com.jun.plugin.generator",
-		"com.jun.plugin.quartz"})
+		"com.jun.plugin.quartz","com.jun.plugin.online"})
 @ServletComponentScan(basePackages = {"com.jun.plugin.**.filter"})
 public class OnlineApplication extends SpringBootServletInitializer {
 	public static void main(String[] args) throws Exception {
