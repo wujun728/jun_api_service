@@ -1,3 +1,4 @@
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.db.sql.SqlExecutor;
@@ -13,13 +14,15 @@ public class Test666 {
 
 
     public static void main(String[] args) {
-        List<String> filenames = FileUtil.readLines(new File("D:\\Documents\\Desktop\\MP4.txt"),"UTF-8");
+        List<String> filenames = FileUtil.readLines(new File("D:\\Documents\\Desktop\\MP4NEW.txt"),"UTF-8");
         System.out.println(filenames.size());
         Set<String> sets = Sets.newHashSet();
         filenames.forEach(i->{sets.add(i);});
         System.out.println("不重复的mp4链接："+sets.size());
 
-        List<String> urls = FileUtil.readLines(new File("D:\\Documents\\Desktop\\11112.txt"),"UTF-8");
+        String fileName = "02010111";
+
+        List<String> urls = FileUtil.readLines(new File("D:\\Documents\\Desktop\\"+fileName+".txt"),"UTF-8");
         Set<String> sets2 = Sets.newHashSet();
         Map<String,String> map2 = new HashMap<>();
         urls.forEach(i->{
@@ -59,11 +62,11 @@ public class Test666 {
         });
 
         System.out.println("重复的mp4链接1exitst："+urlsExists.size());
-        FileUtil.writeUtf8Lines(urlsExists,"D:\\Documents\\Desktop\\exists-01251.txt");
+        FileUtil.writeUtf8Lines(urlsExists,"D:\\Documents\\Desktop\\exists-"+ fileName +".txt");
         System.err.println("不重复的mp4链接1new："+urlsNew.size());
-        FileUtil.writeUtf8Lines(urlsNew,"D:\\Documents\\Desktop\\new-01251.txt");
+        FileUtil.writeUtf8Lines(urlsNew,"D:\\Documents\\Desktop\\new-"+ fileName +".txt");
         System.err.println("不重复的mp4链接1new2："+urlsNewMP4.size());
-        FileUtil.writeUtf8Lines(urlsNewMP4,"D:\\Documents\\Desktop\\new-n-01251.txt");
+        FileUtil.writeUtf8Lines(urlsNewMP4,"D:\\Documents\\Desktop\\new-n-"+ fileName +".txt");
 
 //        String result = HttpUtil.post("https://gitlab.billjc.com/oauth/token?grant_type=password", "{\n" +
 //                "    \"username\": \"wujun82921\",\n" +

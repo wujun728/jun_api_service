@@ -15,10 +15,11 @@
 	</properties>
 
 	<modules>
+		<module>common</module>
 		<module>system</module>
 		<module>plugins</module>
 		<module>modules</module>
-		<module>admin</module>
+		<module>main</module>
 
 	</modules>
 
