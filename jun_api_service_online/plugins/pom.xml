@@ -16,6 +16,7 @@
         <module>snakerflow</module>
         <module>quartz</module>
         <module>generator</module>
+        <module>generator2</module>
         <module>sms</module>
         <module>shiro</module>
     </modules>

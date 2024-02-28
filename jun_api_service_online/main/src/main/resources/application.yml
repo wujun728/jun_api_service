@@ -55,10 +55,14 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     cache-enabled: false
-  mapper-locations: classpath:mapper/*.xml
+  mapper-locations:
+  ## classpath:mapper/*.xml,classpath:mapper/*Mapper.xml
+    - classpath*:mapper/*.xml # 扫描子模块下的 mapper.xml文件
+    - classpath:mapper/*.xml # 扫描当前模块下的 mapper.xml 文件
 #  mapper-locations: classpath:mapper/*.xml,classpath:mapper/${project.database}/**/*.xml
   type-aliases-package: org.snaker.engine.entity
   global-config:
+    enable-sql-runner: true
     db-config:
       logic-delete-value: 0
       logic-not-delete-value: 1

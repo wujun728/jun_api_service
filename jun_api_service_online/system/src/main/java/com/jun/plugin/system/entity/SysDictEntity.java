@@ -32,6 +32,9 @@ public class SysDictEntity extends BaseEntity implements Serializable {
     @TableId("id")
     private String id;
 
+
+    @TableField("code")
+    private String code;
     /**
      * 字典名称
      */
@@ -44,12 +47,28 @@ public class SysDictEntity extends BaseEntity implements Serializable {
     @TableField("remark")
     private String remark;
 
+    @TableField("sort")
+    private Integer sort;
+
+    @TableField("status")
+    private String status;
+
     /**
      * 创建时间
      */
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createTime;
+
+    @TableField(value = "update_time", fill = FieldFill.INSERT)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private Date updateTime;
+
+    @TableField(value = "create_user", fill = FieldFill.INSERT)
+    private String createUser;
+
+    @TableField(value = "update_user", fill = FieldFill.INSERT)
+    private String updateUser;
 
 
 }

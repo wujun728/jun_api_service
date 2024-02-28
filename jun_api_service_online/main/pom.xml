@@ -48,6 +48,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>com.jun.plugin</groupId>
+			<artifactId>generator2</artifactId>
+			<version>1.0</version>
+		</dependency>
         <dependency>
             <groupId>com.jun.plugin</groupId>
 		    <artifactId>quartz</artifactId>
@@ -149,7 +154,6 @@
 			<version>9.22.3</version>
 		</dependency>
 
-
 	</dependencies>
 
 <!-- 依赖声明 -->
@@ -162,7 +166,8 @@
                   	<!-- <version>2.6.9</version> -->
                <!-- <version>2.3.12.RELEASE</version> -->
                <!-- <version>2.4.13</version> -->
-               		<version>2.5.14</version>
+				<!-- <version>2.5.14</version>-->
+				<version>2.1.4.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

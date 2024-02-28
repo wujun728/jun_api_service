@@ -81,9 +81,9 @@ public class OnlineTableController {
         return Result.ok(qfyb);
     }
 
-    public OnlineTableController(OnlineTableService bEyb) {
-        OnlineTableController CEyb = this;
-        CEyb.onlineTableService = bEyb;
+    public OnlineTableController(OnlineTableService onlineTableService) {
+        OnlineTableController onlineTableController = this;
+        onlineTableController.onlineTableService = onlineTableService;
     }
 }
 
