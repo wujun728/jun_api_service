@@ -1,4 +1,4 @@
-package com.jun.plugin.generate.core.param;
+package com.jun.plugin.generate.core.vo;
 
 import com.jun.plugin.generate.core.consts.GenConstant;
 import com.jun.plugin.generate.modular.entity.SysCodeGenerateConfig;

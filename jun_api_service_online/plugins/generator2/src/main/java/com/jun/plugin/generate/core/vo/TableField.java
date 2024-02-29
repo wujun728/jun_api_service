@@ -1,4 +1,4 @@
-package com.jun.plugin.generate.core.param;
+package com.jun.plugin.generate.core.vo;
 
 import lombok.Data;
 

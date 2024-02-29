@@ -3,7 +3,7 @@ package com.jun.plugin.generate.core.context;
 import com.jun.plugin.generate.core.ref.YesOrNotEnum;
 import com.jun.plugin.generate.modular.entity.SysCodeGenerateConfig;
 import org.apache.velocity.VelocityContext;
-import com.jun.plugin.generate.core.param.XnCodeGenParam;
+import com.jun.plugin.generate.core.vo.XnCodeGenParam;
 
 import java.util.ArrayList;
 import java.util.List;

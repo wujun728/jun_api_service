@@ -28,7 +28,7 @@ import com.jun.plugin.generate.core.ref.AbstractBaseExceptionEnum;
 //import vip.xiaonuo.core.annotion.ExpEnumType;
 //import vip.xiaonuo.core.exception.enums.abs.AbstractBaseExceptionEnum;
 //import vip.xiaonuo.core.factory.ExpEnumCodeFactory;
-import com.jun.plugin.generate.core.consts.GenExpEnumConstant;
+//import com.jun.plugin.generate.core.consts.GenExpEnumConstant;
 
 /**
  * 代码生成基础配置相关异常枚举
