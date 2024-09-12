@@ -210,7 +210,21 @@ public class TokenService
      * @param request
      * @return token
      */
+    //TODO modified wujun
     private String getToken(HttpServletRequest request)
+    {
+        String token = getTokenHeader(request);
+        if(StringUtils.isNotEmpty(token)){
+            return token;
+        }
+        token = request.getParameter(header);
+        if (StringUtils.isNotEmpty(token) && token.startsWith(Constants.TOKEN_PREFIX))
+        {
+            token = token.replace(Constants.TOKEN_PREFIX, "");
+        }
+        return token;
+    }
+    private String getTokenHeader(HttpServletRequest request)
     {
         String token = request.getHeader(header);
         if (StringUtils.isNotEmpty(token) && token.startsWith(Constants.TOKEN_PREFIX))

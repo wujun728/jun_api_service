@@ -1,6 +1,10 @@
 package com.ruoyi.web.controller.system;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import com.ruoyi.qixing.layui.wrapper.EleTreeWrapper;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -128,5 +132,17 @@ public class SysDeptController extends BaseController
         }
         deptService.checkDeptDataScope(deptId);
         return toAjax(deptService.deleteDeptById(deptId));
+    }
+
+    @GetMapping("/treeData2")
+    //@ResponseBody
+    public Map treeData2()
+    {
+        Map retMap = new HashMap();
+        List<Map<String, Object>> tree = deptService.selectDeptTree(new SysDept());
+        tree = EleTreeWrapper.getInstance().getTree(tree,"pId","id");
+        retMap.put("code",0);
+        retMap.put("data",tree);
+        return retMap;
     }
 }

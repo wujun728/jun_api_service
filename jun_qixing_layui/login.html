@@ -338,9 +338,11 @@
                         //CoreUtil.setData("userProfile",res.data);
                         CoreUtil.setData("access_token","Bearer " + res.token);
                         CoreUtil.setData("Authorization","Bearer " + res.token);
-                            layer.msg('登录成功', {icon: 1,time: 500}, function () {
-                                //window.location = '/index_v1.html';
-                                window.location = 'index.html';
+                        localStorage.setItem("Authorization","Bearer " + res.token);
+                        console.log("Authorization:", localStorage.getItem("Authorization"));
+                        layer.msg('登录成功', {icon: 1,time: 500}, function () {
+                            //window.location = '/index_v1.html';
+                            window.location = 'index.html';
                         });
                     } else {
                         if(res){

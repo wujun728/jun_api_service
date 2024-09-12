@@ -69,7 +69,7 @@ public class QixingController extends BaseController
                 map.put("component",map.get("component")+".html");
             }
         }
-        menus1 = (List) menus1.stream().map(item->{return item;}).collect(Collectors.toList());
+        menus1 = (List) menus1.stream().map(item-> item).collect(Collectors.toList());
         List menus2 = TreeBuildUtil.listToTree(menus1,"0","menu_id","parent_id");
         Map data = new HashMap<>();
         data.put("apps",apps1);

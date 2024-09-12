@@ -1,8 +1,6 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -41,6 +39,58 @@ public class SysDeptServiceImpl implements ISysDeptService
 
     @Autowired
     private SysRoleMapper roleMapper;
+
+    /**
+     * 查询部门管理树
+     *
+     * @param dept 部门信息
+     * @return 所有部门信息
+     */
+    @Override
+    @DataScope(deptAlias = "d")
+    public List<Map<String, Object>> selectDeptTree(SysDept dept)
+    {
+        List<Map<String, Object>> trees = new ArrayList<Map<String, Object>>();
+        List<SysDept> deptList = deptMapper.selectDeptList(dept);
+        trees = getTrees(deptList, false, null);
+        return trees;
+    }
+
+    /**
+     * 对象转部门树
+     *
+     * @param deptList 部门列表
+     * @param isCheck 是否需要选中
+     * @param roleDeptList 角色已存在菜单列表
+     * @return
+     */
+    public List<Map<String, Object>> getTrees(List<SysDept> deptList, boolean isCheck, List<String> roleDeptList)
+    {
+
+        List<Map<String, Object>> trees = new ArrayList<Map<String, Object>>();
+        for (SysDept dept : deptList)
+        {
+            if (UserConstants.DEPT_NORMAL.equals(dept.getStatus()))
+            {
+                Map<String, Object> deptMap = new HashMap<String, Object>();
+                deptMap.put("id", dept.getDeptId());
+                deptMap.put("pId", dept.getParentId());
+                deptMap.put("name", dept.getDeptName());
+                deptMap.put("title", dept.getDeptName());
+                if (isCheck)
+                {
+                    deptMap.put("checked", roleDeptList.contains(dept.getDeptId() + dept.getDeptName()));
+                }
+                else
+                {
+                    deptMap.put("checked", false);
+                }
+                trees.add(deptMap);
+            }
+        }
+        return trees;
+    }
+
 
     /**
      * 查询部门管理数据

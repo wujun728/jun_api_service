@@ -149,6 +149,7 @@ layui.use(['eleTree', 'common' , 'xnUtil', 'xmSelect', 'laydate'], function () {
             $.ajax({
                 type: "POST",
                 url: ctx + "system/user/checkLoginNameUnique",
+                headers: {'Accept': 'application/json', 'Authorization': localStorage.getItem("Authorization")},
                 async: false,
                 dataType: "json",
                 data: {
