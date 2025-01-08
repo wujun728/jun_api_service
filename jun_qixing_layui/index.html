@@ -213,6 +213,10 @@
                 });
             });
         });
+        CoreUtil.sendGet("/dev-api/getInfo", param, function (res) { 
+            //将用户信息缓存到本地
+            layui.data(admin.setter.tableName, {key: 'loginUser', value: res});
+        });
     });
 </script>
 </body>
