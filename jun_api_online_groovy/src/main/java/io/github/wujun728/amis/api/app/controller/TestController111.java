@@ -1,7 +1,6 @@
 package io.github.wujun728.amis.api.app.controller;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import io.github.wujun728.amis.api.utils.DbUtil;
 //import com.jfinal.plugin.activerecord.Db;
 //import io.github.wujun728.system.entity.SysUser;
 //import io.github.wujun728.system.service.SysDictService;
@@ -10,6 +9,7 @@ import io.github.wujun728.common.base.Result;
 //import io.github.wujun728.db.record.Db;
 import freemarker.template.TemplateException;
 import io.github.wujun728.db.record.Db;
+import io.github.wujun728.rest.util.DbUtil;
 import io.github.wujun728.rest.util.HttpRequestUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
