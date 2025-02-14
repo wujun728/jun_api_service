@@ -18,6 +18,9 @@
 	<modules>   
 		<module>jun_api_online_groovy</module>
 		<module>jun_sql_online</module>
+		<module>jun_api_service_admin</module>
+		<module>jun_api_service_main</module>
+		<module>jun_api_service_simple</module>
 	</modules>
 
 	<dependencies>
