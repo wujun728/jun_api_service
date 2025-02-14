@@ -21,6 +21,7 @@
 		<module>jun_api_service_admin</module>
 		<module>jun_api_service_main</module>
 		<module>jun_api_service_simple</module>
+		<module>jun_api_service_demo</module>
 		<module>spring_jfinal_activerecord</module>
 	</modules>
 
