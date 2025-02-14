@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>团队资源列表</title>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/static/img/favicon.ico}" media="screen"/>
+    <link rel="stylesheet" th:href="@{/static/css/layui.css}" media="all"/>
+</head>
+<body>
+<form class="layui-form" style="padding:10px;">
+    <div class="layui-panel">
+        <div class="layui-form nowrap">
+            <table class="layui-hide" id="dataTable" lay-filter="dataTable"></table>
+        </div>
+    </div>
+</form>
+</body>
+<script th:src="@{/static/layui.js}"></script>
+<script th:replace="~{base::ctx}"/>
+<script>
+    layui.use(function () {
+        const table = layui.table;
+        let id = [[${id}]];
+
+        table.render({
+            elem: '#dataTable',
+            url: ctx + 'settingManager/queryTeamResourceList?id=' + id,
+            toolbar: true,
+            defaultToolbar: ['filter', 'exports', 'print'],
+            page: false,
+            height: '525',
+            cols: [
+                [
+                    {field: 'teamId', title: '团队ID', sort: true, fixed: true,width: 100},
+                    {field: 'teamName', title: '团队名称', sort: true, fixed: true, width: 200},
+                    {field: 'resourceId', title: '资源ID', sort: true, fixed: true, width: 200},
+                    {field: 'resourceName', title: '资源名称', sort: true, fixed: true},
+                    {field: 'resourceType', title: '资源类型', sort: true, fixed: true},
+                    {field: 'datetime', title: '授权时间', sort: true, fixed: true}
+
+                ]
+            ],
+            parseData: res => parseData(res)
+        });
+    });
+</script>
+</html>

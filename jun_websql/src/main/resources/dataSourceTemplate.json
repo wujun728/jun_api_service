@@ -1,0 +1,93 @@
+[
+  {
+    "name": "oracle",
+    "driverClass": "oracle.jdbc.driver.OracleDriver",
+    "url": "jdbc:oracle:thin:@127.0.0.1:1521:数据库名称",
+    "dbCheckUrl": "select 1 from dual",
+    "typeName": "内置"
+  },
+  {
+    "name": "mysql",
+    "driverClass": "com.mysql.cj.jdbc.Driver",
+    "url": "jdbc:mysql://127.0.0.1:3306/数据库名称?useUnicode=true&characterEncoding=UTF-8&useSSL=true&serverTimezone=Asia/Shanghai&useInformationSchema=true",
+    "dbCheckUrl": "select 1 ",
+    "typeName": "内置"
+  },
+  {
+    "name": "h2file",
+    "driverClass": "org.h2.Driver",
+    "url": "jdbc:h2:数据库名称;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=1",
+    "dbCheckUrl": "select 1 ",
+    "typeName": "内置"
+  },
+  {
+    "name": "postgresql",
+    "driverClass": "org.postgresql.Driver",
+    "url": "jdbc:postgresql://127.0.0.1:5432/数据库名称?characterEncoding=utf-8",
+    "dbCheckUrl": " select 'x' ",
+    "typeName": "内置"
+  },
+  {
+    "name": "sqlite",
+    "driverClass": "org.sqlite.JDBC",
+    "url": "jdbc:sqlite:数据库名称",
+    "dbCheckUrl": " select 1 ",
+    "typeName": "内置"
+  },
+  {
+    "name": "sqlserver",
+    "driverClass": "com.microsoft.sqlserver.jdbc.SQLServerDriver",
+    "url": "jdbc:sqlserver://127.0.0.1:1433;DatabaseName=数据库名",
+    "dbCheckUrl": "select 1",
+    "typeName": "内置"
+  },
+  {
+    "name": "dm",
+    "driverClass": "dm.jdbc.driver.DmDriver",
+    "url": "jdbc:dm://127.0.0.1:5236/数据库名称",
+    "dbCheckUrl": "select 1",
+    "typeName": "内置"
+  },
+  {
+    "name": "kingbase8",
+    "driverClass": "com.kingbase8.Driver",
+    "url": "jdbc:kingbase8://127.0.0.1:54321/数据库名称",
+    "dbCheckUrl": "select 1",
+    "typeName": "内置"
+  },
+  {
+    "name": "oscar",
+    "driverClass": "com.oscar.Driver",
+    "url": "jdbc:oscar://127.0.0.1:2003/数据库名称?serverTimezone=UTC&useSSL=FALSE",
+    "dbCheckUrl": "select 1",
+    "typeName": "内置"
+  },
+  {
+    "name": "odps",
+    "driverClass": "com.aliyun.odps.jdbc.OdpsDriver",
+    "url": "jdbc:odps:http://xx.maxcompute.aliyun.com/api?project=项目空间名称&useProjectTimeZone=true;",
+    "dbCheckUrl": "select 1",
+    "typeName": "内置"
+  },
+  {
+      "name": "doris",
+      "driverClass": "com.mysql.cj.jdbc.Driver",
+      "url": "jdbc:mysql://127.0.0.1:9030/数据库名称?useUnicode=true&characterEncoding=UTF-8&useSSL=true&serverTimezone=Asia/Shanghai",
+      "dbCheckUrl": "select 1",
+      "typeName": "内置"
+  },
+  {
+        "name": "TiDB",
+        "driverClass": "com.mysql.cj.jdbc.Driver",
+        "url": "jdbc:mysql://127.0.0.1:4000/数据库名称",
+        "dbCheckUrl": "select 1",
+        "typeName": "内置"
+  }
+  {
+          "name": "clickHouse",
+          "driverClass": "ru.yandex.clickhouse.ClickHouseDriver",
+          "url": "jdbc:clickhouse://127.0.0.1:8123/数据库名称",
+          "dbCheckUrl": "select 1",
+          "typeName": "内置"
+    }
+]

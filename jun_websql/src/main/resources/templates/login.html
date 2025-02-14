@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>WebSql管理系统</title>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/static/img/favicon.ico}" media="screen"/>
+    <link rel="stylesheet" th:href="@{/static/css/layui.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/static/css/login.css}" media="all"/>
+</head>
+<body>
+<form class="layui-form">
+    <div class="login-container">
+        <div class="layui-form-item title">WEBSQL</div>
+        <div class="layui-form-item">
+            <div class="layui-input-wrap">
+                <div class="layui-input-prefix">
+                    <i class="layui-icon layui-icon-username"></i>
+                </div>
+                <input type="text" name="userName" value="" lay-verify="required" placeholder="账    号"
+                       lay-reqtext="请填写账号" autocomplete="off" class="layui-input" lay-affix="clear">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-wrap">
+                <div class="layui-input-prefix">
+                    <i class="layui-icon layui-icon-password"></i>
+                </div>
+                <input type="password" name="password" value="" lay-verify="required" placeholder="密   码"
+                       lay-reqtext="请填写密码" autocomplete="off" class="layui-input" lay-affix="eye">
+            </div>
+        </div>
+        <div class="layui-form-item captcha">
+            <div class="layui-row">
+                <div class="layui-col-xs7">
+                    <div class="layui-input-wrap">
+                        <div class="layui-input-prefix">
+                            <i class="layui-icon layui-icon-vercode"></i>
+                        </div>
+                        <input type="text" name="captcha" value="" lay-verify="required" placeholder="验证码"
+                               lay-reqtext="请填写验证码" autocomplete="off" class="layui-input" lay-affix="clear">
+                    </div>
+                </div>
+                <div class="layui-col-xs5">
+                    <div style="margin-left: 10px;">
+                        <img id="captcha" th:src="@{/login/captcha}" onclick="refreshCode(this)">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <button class="log-button" lay-submit lay-filter="login">登录</button>
+        </div>
+        <div class="layui-form-item copyright" style="text-align:center;color:#918b8b;">
+        </div>
+    </div>
+</form>
+</body>
+<script th:src="@{/static/layui.js}"></script>
+<script th:src="@{/static/base64.min.js}"></script>
+<script th:replace="~{base::ctx}"/>
+<script th:inline="javascript">
+    layui.use(function () {
+        const layer = layui.layer;
+        const form = layui.form;
+        const $ = layui.jquery;
+        //init
+        $(".copyright").html("©" + loginCopyright);
+        if (!captchaEnabled) {
+            $(".captcha").css("display", "none");
+            $("input[name='captcha']").remove();
+        }
+        form.on('submit(login)', function (data) {
+            if (!loginEnabled) {
+                layer.msg("系统已关闭登录入口,请联系管理员!");
+                return false;
+            }
+            data.field.timestamp = new Date().getTime();
+            let param = Base64.encode(JSON.stringify(data.field));
+            post(ctx + "login", param, (res) => {
+                layer.msg(res.msg, {icon: res.code === 200 ? 1 : 2}, () => {
+                    location.href = ctx;
+                });
+            })
+            return false;
+        });
+    });
+
+    /**
+     * 刷新验证码，防止图片不变化
+     */
+    function refreshCode() {
+        if (!captchaEnabled) {
+            return;
+        }
+        const captcha = document.getElementById("captcha");
+        captcha.src = ctx + "login/captcha?t=" + new Date().getTime();
+    }
+</script>
+</html>

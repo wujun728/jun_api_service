@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>SQL文本常用管理</title>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/static/img/favicon.ico}" media="screen"/>
+    <link rel="stylesheet" th:href="@{/static/css/layui.css}" media="all"/>
+</head>
+<body>
+<form class="layui-form">
+    <div class="layui-panel">
+        <div style="margin: 15px;">
+            <div class="layui-form-item">
+                <label class="layui-form-label">名称:</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="title" id="title" placeholder="请输入名称" class="layui-input"
+                           lay-affix="clear">
+                </div>
+                <label class="layui-form-label">文本内容:</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="sqlText" id="sqlText" placeholder="请输入文本内容" class="layui-input"
+                           lay-affix="clear">
+                </div>
+                <div class="layui-input-normal">
+                    <button class="layui-btn layui-btn-primary layui-border-green search-btn" lay-submit
+                            lay-filter="table-search">
+                        <i class="layui-icon layui-icon-search"> </i>查 询
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-panel" style="margin-top: 15px;">
+        <div class="layui-form nowrap">
+            <table class="layui-hide" id="dataTable" lay-filter="dataTable"></table>
+        </div>
+    </div>
+</form>
+</body>
+<script th:src="@{/static/layui.js}"></script>
+<script th:src="@{/static/base64.min.js}"></script>
+<script th:replace="~{base::ctx}"/>
+<script type="text/html" id="toolbarTable">
+    <div class="layui-clear-space">
+        <a class="layui-btn  layui-btn-xs" lay-event="view">查看</a>
+        <a class="layui-btn layui-bg-red layui-btn-xs" lay-event="delete">删除</a>
+    </div>
+</script>
+<script>
+    layui.use(function () {
+        const layer = layui.layer;
+        const form = layui.form;
+        const $ = layui.jquery;
+        const table = layui.table;
+        const laytpl = layui.laytpl;
+        const util = layui.util;
+
+        table.render({
+            elem: '#dataTable',
+            url: ctx + 'sqlManager/querySqlTextList',
+            toolbar: true,
+            defaultToolbar: ['filter', 'exports', 'print'],
+            page: true,
+            height: '525',
+            cols: [
+                [
+                    {field: 'id', title: 'id', sort: true, fixed: true},
+                    {field: 'title', title: '名称', sort: true, fixed: true},
+                    {field: 'sqlCreateUser', title: '创建人', sort: true, fixed: true},
+                    {field: 'sqlCreateDate', title: '保存时间', sort: true, fixed: true},
+                    {fixed: 'right', title: '操作', width: 134, minWidth: 125, toolbar: '#toolbarTable'}
+                ]
+            ],
+            parseData: res => parseData(res)
+        });
+
+        table.on('tool(dataTable)', function (obj) {
+            var data = obj.data;
+            switch (obj.event) {
+                case 'view':
+                    let str = Base64.decode(data.sqlText) || "";
+                    const content = laytpl('<div style="margin: 5px;"><pre class="layui-code">{{= d.content}}</pre></div>')
+                        .render({content: str});
+                    openContent("查看SQL内容", content);
+                    break;
+                case 'delete':
+                    layer.confirm('您确定要删除吗?', {icon: 3}, function () {
+                        post(ctx + "sqlManager/deleteSqlText/" + data.id, null, (res) => {
+                            layer.msg(res.msg, {icon: res.code === 200 ? 1 : 2}, () => {
+                                $(".search-btn").click();
+                            });
+                        })
+                    }, function () {
+                    });
+                    break;
+            }
+        });
+
+        form.on('submit(table-search)', function (data) {
+            const field = data.field;
+            table.reloadData('dataTable', {
+                scrollPos: true,
+                where: field
+            });
+            return false;
+        });
+    });
+</script>
+</html>

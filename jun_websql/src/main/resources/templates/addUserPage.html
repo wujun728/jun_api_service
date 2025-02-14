@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>新增用户</title>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/static/img/favicon.ico}" media="screen"/>
+    <link rel="stylesheet" th:href="@{/static/css/layui.css}" media="all"/>
+</head>
+<style>
+    .layui-input-inline b {
+        color: rgba(68, 65, 30, 0.44);
+        font-size: 13px;
+        margin: 0 10px;
+        font-weight: normal;
+    }
+</style>
+<body>
+<div class="layui-field-box">
+    <form class="layui-form layui-form-pane" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">登录账号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="userName" id="userName" lay-verify="required" autocomplete="off"
+                       lay-affix="clear"
+                       placeholder="请输入登录账号" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="name" id="name" lay-verify="required" lay-affix="clear"
+                       placeholder="请输入用户名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户密码</label>
+            <div class="layui-input-inline">
+                <input type="password" name="password" id="password" lay-verify="required" placeholder="请输入用户密码"
+                       lay-affix="eye"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">用户邮箱</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="email" id="email" placeholder="请输入用户邮箱" lay-affix="clear"
+                           autocomplete="off" class="layui-input" lay-verify="email">
+                </div>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label" pane>角色配置</label>
+            <div class="layui-input-inline" style="width: 500px;" id="checkboxId"></div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label" pane>团队配置</label>
+            <div class="layui-input-inline">
+                <div class="layui-input-inline" style="width: 500px;" id="teamList"></div>
+                <input type="hidden" name="teamId" id="teamId">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-inline">
+                <select name="state" lay-verify="required" lay-search="">
+                    <option value="0">有效</option>
+                    <option value="1">无效</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <div class="btn-list">
+                <div class="btnlist">
+                    <button class="layui-btn layui-btn-primary layui-border-green" lay-submit lay-filter="save"
+                            lay-type="saveContinue">
+                        <i class="layui-icon  layui-icon-add-circle">&nbsp;</i>保存并继续
+                    </button>
+                    <button class="layui-btn layui-btn-primary layui-border-blue" lay-submit lay-filter="save"
+                            lay-type="saveClose">
+                        <i class="layui-icon layui-icon-add-1">&nbsp;</i>保存并关闭
+                    </button>
+                    <button class="layui-btn layui-btn-primary layui-border-red" onclick="refresh();">
+                        <i class="layui-icon layui-icon-close-fill">&nbsp;</i>关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script th:src="@{/static/layui.js}"></script>
+<script th:replace="~{base::ctx}"></script>
+<script>
+
+    layui.use(function () {
+        const layer = layui.layer;
+        const form = layui.form;
+        const $ = layui.jquery;
+        const util = layui.util;
+
+        //加载角色信息
+        post(ctx + "settingManager/queryRolesSelect", null, (res) => {
+            if (res.code === 200) {
+                for (let i in res.data) {
+                    let item = res.data[i];
+                    $("#checkboxId").append('<input type="checkbox" name="roles" value="' + item.role + '" title="' + "(" + item.role + ")" + item.description + '">');
+                }
+                form.render();
+            } else {
+                layer.msg(res.msg, {icon: 2});
+            }
+        })
+
+        /**
+         * 加载团队数据源
+         */
+        post(ctx + "settingManager/queryTeamAllBySelect", null, (res) => {
+            if (res.code === 0) {
+                for (let i in res.data) {
+                    let item = res.data[i];
+                    $("#teamList").append('<input type="checkbox" name="teams" value="' + item.code + '" title="' + "(" + item.code + ")" + item.value + '">');
+                }
+                form.render();
+            } else {
+                layer.msg(res.msg, {icon: 2});
+            }
+        })
+
+        /**
+         * 保存
+         */
+        form.on('submit(save)', function (data) {
+            const field = data.field;
+            const elem = data.elem;
+            let layType = elem.getAttribute("lay-type");
+            let role_value = [];
+            let roles = document.getElementsByName("roles");
+            $.each(roles, function (i) {
+                if (roles[i].checked) {
+                    role_value.push(roles[i].value);
+                }
+            });
+            if (role_value.length === 0) {
+                layer.msg("请选择角色!", {icon: 2});
+                return false;
+            }
+            field["sysRoleName"] = role_value.toString();
+            let team_value = [];
+            let teams = document.getElementsByName("teams");
+            $.each(teams, function (i) {
+                if (teams[i].checked) {
+                    team_value.push(teams[i].value);
+                }
+            });
+            if (team_value.length === 0) {
+                layer.msg("请选择团队!", {icon: 2});
+                return false;
+            }
+            field["sysTeamName"] = team_value.toString();
+            post(ctx + "settingManager/addUserRoleSource", field, (res) => {
+                layer.msg(res.msg, {icon: res.code === 200 ? 1 : 2}, () => {
+                    if (res.code === 200) {
+                        if (layType === "saveClose") {
+                            refresh();
+                        } else {
+                            location.reload();
+                        }
+                    }
+                });
+            })
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

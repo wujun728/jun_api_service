@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>新增告警配置</title>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/static/img/favicon.ico}" media="screen"/>
+    <link rel="stylesheet" th:href="@{/static/css/layui.css}" media="all"/>
+</head>
+<style>
+    .layui-input-inline b {
+        color: rgba(68, 65, 30, 0.44);
+        font-size: 13px;
+        margin: 0 10px;
+        font-weight: normal;
+    }
+</style>
+<body>
+<div class="layui-field-box">
+    <form class="layui-form layui-form-pane" action="">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" id="name" lay-verify="required" autocomplete="off"
+                       lay-affix="clear"
+                       placeholder="请输入名称" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">类型</label>
+            <div class="layui-input-block">
+                <select name="type" lay-verify="required" lay-filter="type" id="type">
+                    <option value="钉钉">钉钉</option>
+                    <option value="飞书">飞书</option>
+                    <option value="命令行">命令行</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label" pane>地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="url" id="url" lay-verify="required" autocomplete="off"
+                       lay-affix="clear"
+                       placeholder="https://oapi.dingtalk.com/robot/send?access_token=xxx" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label" pane>Secret</label>
+            <div class="layui-input-block">
+                <input type="text" name="secret" id="secret" lay-verify="required" autocomplete="off"
+                       lay-affix="clear"
+                       placeholder="" class="layui-input">
+                <div class="layui-form-mid layui-text-em" id="secretTips">签名校验的固定字符串</div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label" pane>消息内容</label>
+            <div class="layui-input-block">
+                <textarea id='content' name="content" class="layui-textarea" style="width: 400px;height: 200px;">{标题},{等级} 出现告警，请及时查看任务!</textarea>
+                <div class="layui-form-mid layui-text-em" id="contentTips">
+                    内置变量:{标题},{时间},{状态},{等级},{数据值};内容中出现占位符会被替换真实值，,不同功能内置变量不一致，请具体验证。
+                </div>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <div class="btn-list">
+                <div class="btnlist">
+                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="test"
+                            lay-type="saveClose">
+                        <i class="layui-icon layui-icon-add-1">&nbsp;</i>测试一下
+                    </button>
+                    <button class="layui-btn layui-btn-primary layui-border-green" lay-submit lay-filter="save"
+                            lay-type="saveContinue">
+                        <i class="layui-icon  layui-icon-add-circle">&nbsp;</i>保存并继续
+                    </button>
+                    <button class="layui-btn layui-btn-primary layui-border-blue" lay-submit lay-filter="save"
+                            lay-type="saveClose">
+                        <i class="layui-icon layui-icon-add-1">&nbsp;</i>保存并关闭
+                    </button>
+                    <button class="layui-btn layui-btn-primary layui-border-red" onclick="refresh();">
+                        <i class="layui-icon layui-icon-close-fill">&nbsp;</i>关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script th:src="@{/static/layui.js}"></script>
+<script th:src="@{/static/lay-config.js}"></script>
+<script th:replace="~{base::ctx}"></script>
+<script>
+    layui.use(['jquery', 'layer', 'form', 'laySelect'], function () {
+        const layer = layui.layer;
+        const form = layui.form;
+        const $ = layui.jquery;
+
+        //输入提示切换
+        form.on('select(type)', function (data) {
+            var value = data.value; // 获得被选中的值
+            $("#content").val("{标题},{等级} 出现告警，请及时查看任务!");
+            switch (value) {
+                case "命令行":
+                    $("#content").val("#!/usr/bin/env bash\n" +
+                        "echo \"Hello, world!\"");
+                    $("#url").val("#");
+                    break;
+                case "飞书":
+                    $("#url").val("https://open.feishu.cn/open-apis/bot/v2/hook/xxx");
+                    break;
+                case "钉钉":
+                    $("#url").val("https://oapi.dingtalk.com/robot/send?access_token=xxx");
+                    break;
+                default:
+            }
+            return false;
+        });
+
+        /**
+         * 测试
+         */
+        form.on('submit(test)', function (data) {
+            const field = data.field;
+            post(ctx + "settingManager/testMessageTemplate", field, (res) => {
+                layer.msg(res.data === true ? "成功" : "失败，请查看日志!", {icon: res.data === true ? 1 : 2}, () => {
+                    console.info(res);
+                });
+            })
+            return false;
+        });
+
+        /**
+         * 保存
+         */
+        form.on('submit(save)', function (data) {
+            const field = data.field;
+            const elem = data.elem;
+            post(ctx + "settingManager/addMessageTemplate", field, (res) => {
+                layer.msg(res.msg, {icon: res.code === 200 ? 1 : 2}, () => {
+                    if (res.code === 200) {
+                        const layType = elem.getAttribute("lay-type");
+                        if (layType === "saveClose") {
+                            refresh();
+                        } else {
+                            location.reload();
+                        }
+                    }
+                });
+            })
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/static/img/favicon.ico}" media="screen"/>
+    <link rel="stylesheet" th:href="@{/static/css/layui.css}" media="all"/>
+</head>
+<body>
+<div style="text-align: center; width: 100%;">
+    <img th:src="@{/static/img/indexHome.png}" style="margin: 0 auto;cursor:default" alt="logo">
+
+    <div class="layui-panel" id="message" style="display:none;margin: 0 auto;width: 60%;height: 60%">
+        <div style="padding-top: 22px;color:red;font-size: 20px;">[[${errorMsg}]]</div>
+        <div id="url" style="padding: 22px;">
+            <h3><a
+                href="https://gitee.com/boy_0214/websql/wikis/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"
+                target="_blank">帮助手册</a></h3></div>
+    </div>
+</div>
+</body>
+<script th:src="@{/static/layui.js}"></script>
+<script th:replace="~{base::ctx}"></script>
+<script th:inline="javascript">
+    //没有权限时进行页面提示
+    layui.use(function () {
+        const $ = layui.jquery;
+        let errorMsg = [[${errorMsg}]];
+        if (errorMsg != null && errorMsg !== undefined) {
+            $("#message").show();
+        }
+    });
+</script>
+</html>

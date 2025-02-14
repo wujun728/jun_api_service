@@ -1,0 +1,138 @@
+<script type="text/html" id="table-page-pageBar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-primary layui-border-green layui-btn-xs" lay-event="footerBtn1">编辑区
+        </button>
+        <button class="layui-btn layui-btn-primary layui-border-purple layui-btn-xs" lay-event="footerBtn2">结果区
+        </button>
+    </div>
+</script>
+
+<!-- 建表语句-->
+<script type="text/html" id="table-sql-code-tpl">
+    <pre class="layui-code sql-code">
+    {{= d.createTableSql}}
+    </pre>
+    <pre class="layui-code sql-code" style="margin-top: 10px;">
+    {{= d.insertSql}}
+    </pre>
+</script>
+
+<!--表元数据-->
+<script id="view-tale-meta-tpl" type="text/html">
+    <hr class="layui-border-green">
+    <table class="layui-table" lay-size="sm">
+        <colgroup>
+            <col width="200">
+            <col width="200">
+            <col width="200">
+            <col width="200">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td>表名:</td>
+            <td>{{= d.tableName }}</td>
+            <td>库名:</td>
+            <td>{{= d.databaseName }}</td>
+        </tr>
+        <tr>
+            <td>产品名称:</td>
+            <td>{{= d.productName }}</td>
+            <td>产品版本:</td>
+            <td>{{= d.productVersion }}</td>
+        </tr>
+        <!--<tr>
+            <td>驱动名称:</td>
+            <td>{{= d.driverName }}</td>
+            <td>驱动版本:</td>
+            <td>{{= d.driverVersion }}</td>
+        </tr>-->
+        <tr>
+            <td>只读连接:</td>
+            <td>{{= d.readOnly }}</td>
+            <td>支持事务:</td>
+            <td>{{= d.supportsTransactions }}</td>
+        </tr>
+        </tbody>
+    </table>
+    <hr class="layui-border-green">
+    <!-- 列描述 -->
+    <table class="layui-table" lay-size="sm">
+        <colgroup>
+            <col width="200">
+            <col width="200">
+            <col width="200">
+            <col width="200">
+            <col width="200">
+        </colgroup>
+        <thead>
+        <tr>
+            <th>字段名称</th>
+            <th>字段注释</th>
+            <th>字段类型</th>
+            <th>是否NULL</th>
+            <th>是否自增</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{# layui.each(d.tablesMetaList, function(index, item){ }}
+        <tr>
+            <td>{{= item.columnName }}</td>
+            <td>{{= item.comment || '' }}</td>
+            <td>{{= item.typeName }}</td>
+            <td>{{= item.nullable }}</td>
+            <td>{{= item.autoIncrement }}</td>
+        </tr>
+        {{# }); }}
+        </tbody>
+    </table>
+    <hr class="layui-border-green">
+    <!-- 索引描述 -->
+    <table class="layui-table" lay-size="sm">
+        <colgroup>
+            <col width="200">
+            <col width="200">
+            <col width="200">
+        </colgroup>
+        <thead>
+        <tr>
+            <th>索引名称</th>
+            <th>索引字段</th>
+            <th>是否唯一</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{# layui.each(d.tablesIndexMetaList, function(index, item){ }}
+        <tr>
+            <td>{{= item.indexName }}</td>
+            <td>{{= item.columnName }}</td>
+            <td>{{= item.nonUnique || '' }}</td>
+        </tr>
+        {{# }); }}
+        </tbody>
+    </table>
+    <hr class="layui-border-green">
+    <!-- 主键描述 -->
+    <table class="layui-table" lay-size="sm">
+        <colgroup>
+            <col width="200">
+            <col width="200">
+            <col width="200">
+        </colgroup>
+        <thead>
+        <tr>
+            <th>主键名称</th>
+            <th>主键字段</th>
+            <th>主键序列</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{# layui.each(d.tablesKeysMetaList, function(index, item){ }}
+        <tr>
+            <td>{{= item.pkName }}</td>
+            <td>{{= item.columnName }}</td>
+            <td>{{= item.keySeq || '' }}</td>
+        </tr>
+        {{# }); }}
+        </tbody>
+    </table>
+</script>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>用户管理列表</title>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/static/img/favicon.ico}" media="screen"/>
+    <link rel="stylesheet" th:href="@{/static/css/layui.css}" media="all"/>
+</head>
+<style>
+    .layui-input-inline b {
+        color: rgba(68, 65, 30, 0.44);
+        font-size: 13px;
+        margin: 0 10px;
+        font-weight: normal;
+    }
+</style>
+<body>
+<form class="layui-form">
+    <div class="layui-panel">
+        <div style="margin: 15px;">
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户名称:</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="name" id="name" placeholder="请输入用户名称" class="layui-input" lay-affix="clear">
+                </div>
+                <label class="layui-form-label">用户账号:</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="userName" id="userName" placeholder="请输入用户账号" class="layui-input" lay-affix="clear">
+                </div>
+                <label class="layui-form-label">用户邮箱:</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="email" id="email" placeholder="请输入用户邮箱" class="layui-input" lay-affix="clear">
+                </div>
+                <label class="layui-form-label">用户状态:</label>
+                <div class="layui-input-inline">
+                    <label>
+                        <select name="state">
+                            <option value=""></option>
+                            <option value="0">有效</option>
+                            <option value="1">无效</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="layui-input-normal">
+                    <button class="layui-btn layui-btn-primary layui-border-green search-btn" lay-submit id="search"
+                            lay-filter="table-search">
+                        <i class="layui-icon layui-icon-search"> </i>查 询
+                    </button>
+                    <button class="layui-btn layui-btn-primary layui-border-blue"
+                            onclick="openPage('新增用户',ctx+'settingManager/addUserPage')
+                            return false;">
+                        <i class="layui-icon layui-icon-add-1">&nbsp;</i>添 加
+                    </button>
+                    <button class="layui-btn layui-btn-primary layui-border-orange"
+                            onclick="openContent('角色说明','<blockquote class=\'layui-elem-quote layui-quote-nm\'\'>角色说明： 角色按照一级导航栏进行分配，预置5种不同菜单权限控制。</br>super-admin 超级管理员角色 至高无上的权利</br>database-admin 数据源管理角色 配置数据源权限</br>sql-admin SQL管理角色 执行sql，保存文本权限</br>log-admin 日志管理角色 查询日志权限</br>timing-admin 作业管理角色 配置同步任务权限</br>demo-admin 演示功能角色 普通账号不要使用，会影响正常功能权限</blockquote>')
+                            return false;">
+                        <i class="layui-icon layui-icon-tips">&nbsp;</i>角色说明
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-panel" style="margin-top: 15px;">
+        <div class="layui-form nowrap">
+            <table class="layui-hide" id="dataTable" lay-filter="dataTable"></table>
+        </div>
+    </div>
+</form>
+</body>
+<script th:src="@{/static/layui.js}"></script>
+<script th:replace="~{base::ctx}"/>
+<script type="text/html" id="toolbarTable">
+    <div class="layui-clear-space">
+        <a class="layui-btn layui-btn-xs" lay-event="updatePassword">修改密码</a>
+        <a class="layui-btn layui-bg-orange layui-btn-xs" lay-event="updateRole">配置权限</a>
+        <a class="layui-btn layui-bg-red layui-btn-xs" lay-event="deleteUser">删除用户</a>
+    </div>
+</script>
+<script>
+    layui.use(function () {
+        const layer = layui.layer;
+        const form = layui.form;
+        const $ = layui.jquery;
+        const table = layui.table;
+
+        table.render({
+            elem: '#dataTable',
+            url: ctx + 'settingManager/userRoleList',
+            toolbar: true,
+            defaultToolbar: ['filter', 'exports', 'print'],
+            page: true,
+            height: '525',
+            cols: [
+                [
+                    {field: 'userId', title: '用户ID', sort: true, fixed: true},
+                    {field: 'userName', title: '用户账号', sort: true, fixed: true},
+                    {field: 'name', title: '用户名称', sort: true, fixed: true},
+                    {field: 'email', title: '用户邮箱', sort: true, fixed: true},
+                    {field: 'createTime', title: '创建时间', sort: true, fixed: true},
+                    {field: 'sysRoleName', title: '拥有角色', sort: true, fixed: true},
+                    {field: 'stateName', title: '用户状态', sort: true, fixed: true},
+                    {fixed: 'right', title: '操作', width: 300, toolbar: '#toolbarTable'}
+                ]
+            ],
+            parseData: res => parseData(res)
+        });
+
+        table.on('tool(dataTable)', function (obj) {
+            var data = obj.data;
+            switch (obj.event) {
+                case 'updatePassword':
+                    layer.prompt({
+                        formType: 2,
+                        anim: 'slideLeft',
+                        title: '请输入新密码',
+                        area: ['300px', '200px']
+                    }, function (value, index) {
+                        let param = {"password":value,"userId":data.userId};
+                        layer.confirm("确认修改用户密码吗？", function () {
+                            post(ctx + "settingManager/updateResetPassword", param, (res) => {
+                                layer.msg(res.msg, {icon: res.code === 200 ? 1 : 2}, () => {
+                                    $(".search-btn").click();
+                                    layer.closeAll();
+                                });
+                            })
+                        });
+                    });
+                    break;
+                case 'updateRole':
+                    openPage("分配角色", ctx + "settingManager/updateUserRolesPage/" + data.userId);
+                    break;
+                case 'deleteUser':
+                    layer.confirm("您确认要删除此用户吗？", function () {
+                        post(ctx + "settingManager/deleteUserRole/" + data.userId, null, (res) => {
+                            layer.msg(res.msg, {icon: res.code === 200 ? 1 : 2}, () => {
+                                $(".search-btn").click();
+                            });
+                        })
+                    })
+                    break;
+            }
+        });
+
+        form.on('submit(table-search)', function (data) {
+            const field = data.field;
+            table.reloadData('dataTable', {
+                scrollPos: true,
+                where: field
+            });
+            return false;
+        });
+    });
+</script>
+</html>

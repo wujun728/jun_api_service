@@ -1,0 +1,63 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(125deg, #2c3e50, #27ae60, #2980b9, #e74c3c, #8e44ad);
+    background-size: 500%;
+    animation: bgAnimation 15s linear infinite;
+}
+
+.login-container {
+    width: 320px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -150px 0 0 -150px;
+    z-index: 99;
+    border: 2px solid white;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 2px 10px;
+    border-radius: 10px;
+}
+
+@keyframes bgAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.log-button {
+    width: 310px;
+    height: 40px;
+    border: none;
+    background: linear-gradient(-200deg, #74e1b9, #aac2ee);
+    color: #fff;
+    font-weight: bold;
+    letter-spacing: 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.log-button:hover {
+    background: linear-gradient(-200deg, #aac2ee, #74e1b9);
+    background-position-x: -310px;
+}
+.title{
+    text-align: center;
+    color: #48c4e3;
+    font-size: 25px;
+    letter-spacing: 5px;
+    font-weight: 100;
+    text-shadow: 5px 5px 5px rgba(33,45,58,0.3);
+}

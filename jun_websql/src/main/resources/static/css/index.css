@@ -1,0 +1,252 @@
+/**
+
+ @Name：index.css
+ @Author：chenyi
+ @data: 2018/1/25
+ */
+
+/*左侧菜单收起*/
+.toggle-collapse {
+    background: url(../img/toggleCollapse.png) no-repeat 0 0;
+    width: 9px;
+    height: 50px;
+    display: inline-block;
+    position: fixed;
+    left: 200px;
+    top: 50%;
+    margin-top: -17px;
+    cursor: pointer;
+    z-index: 99999;
+}
+
+.toggle-collapse.toggle-show {
+    background-position: right 0;
+}
+
+/*tab页*/
+.layui-tab {
+    margin: 0 !important;
+    width: 99999999px !important;
+}
+
+.layui-tab-left {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 30px;
+    width: 20px;
+    padding-top: 12px;
+    padding-left: 3px;
+    background-color: #f6f6f6;
+    cursor: pointer;
+    z-index: 9999;
+}
+
+.layui-tab-left:hover {
+    color: #009688;
+}
+
+.layui-tab-right {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 30px;
+    width: 20px;
+    padding-top: 12px;
+    padding-left: 3px;
+    background-color: #f6f6f6;
+    cursor: pointer;
+    z-index: 9999;
+}
+
+.layui-tab-right:hover {
+    color: #009688;
+}
+
+.layui-tab-menu {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 30px;
+    width: 20px;
+    padding-top: 12px;
+    padding-left: 3px;
+    background-color: #f6f6f6;
+    cursor: pointer;
+    z-index: 9999;
+}
+
+.layui-tab-title {
+    left: 20px;
+    border-top-width: 1px;
+    border-top-style: solid;
+}
+
+.layui-tab-title li {
+    padding: 0 5px 0 10px !important;
+
+}
+
+.layui-nav-item i {
+    margin-right: 8px;
+
+}
+
+.layui-tab-title li:hover {
+    background-color: #f6f6f6;
+}
+
+.layui-nav-tree {
+    top: 42px;
+}
+
+/*隐藏主页tab删除按钮*/
+.layui-tab-title li.main-tab .layui-tab-close {
+    display: none !important;
+}
+
+.search-menu-back {
+    height: 40px;
+    width: 200px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    background-color: #393D49;
+}
+
+/*菜单搜索*/
+.menu-search {
+    height: 30px;
+    padding-left: 12px;
+    background-color: #424652;
+    border: 1px solid #424652;
+    color: #fff;
+    font-size: 12px;
+    z-index: 10000;
+    width: 190px;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    border-radius: 12px;
+}
+
+.menu-search:hover {
+    border: 1px solid #009688 !important;
+}
+
+.menu-search:focus {
+    border: 1px solid #009688 !important;
+}
+
+.menu-search-clear {
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    color: #666;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 10001;
+}
+
+.menu-search-clear:hover {
+    color: #009688;
+    cursor: pointer;
+}
+
+#main {
+    padding: 3px 10px;
+}
+
+#main iframe {
+    display: none;
+    height: 100%;
+    width: 100%;
+    overflow: visible;
+    background: #fff;
+}
+
+/*右键菜单*/
+.dropdown-menu > li > a {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: 400;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+}
+
+/*锁屏*/
+.lock-content {
+    border-radius: 4px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -150px 0 0 -150px;
+    z-index: 99;
+}
+
+.admin-header-lock {
+    width: 320px;
+    height: 170px;
+    padding: 20px;
+    position: relative;
+    text-align: center;
+}
+
+.admin-header-lock-img {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto;
+}
+
+.admin-header-lock-img img {
+    width: 60px;
+    height: 60px;
+    border-radius: 100%;
+}
+
+.admin-header-lock-name {
+    color: #42bdf1;
+    margin: 8px 0 15px 0;
+}
+
+.input_btn {
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.admin-header-lock-input {
+    width: 170px;
+    color: #fff;
+    background-color: #42bdf1;
+    float: left;
+    margin: 0 10px 0 40px;
+    border: none;
+}
+
+.admin-header-lock-input::-webkit-input-placeholder {
+    color: #fff;
+}
+
+.admin-header-lock-input::-moz-placeholder {
+    color: #fff;
+}
+
+.admin-header-lock-input::-ms-input-placeholder {
+    color: #fff;
+}
+
+.admin-header-lock-input:-moz-placeholder {
+    color: #fff;
+}
+
+#unlock {
+    float: left;
+}
+
+#lock-box p {
+    color: #e60000;
+}

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>新增团队</title>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/static/img/favicon.ico}" media="screen"/>
+    <link rel="stylesheet" th:href="@{/static/css/layui.css}" media="all"/>
+</head>
+<style>
+    .layui-input-inline b {
+        color: rgba(68, 65, 30, 0.44);
+        font-size: 13px;
+        margin: 0 10px;
+        font-weight: normal;
+    }
+</style>
+<body>
+<div class="layui-field-box">
+    <form class="layui-form layui-form-pane" action="">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">团队名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="teamName" id="teamName" lay-verify="required" autocomplete="off"
+                       lay-affix="clear"
+                       placeholder="请输入团队名称" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">团队描述</label>
+            <div class="layui-input-inline">
+                <input type="text" name="description" id="description" lay-affix="clear"
+                       placeholder="请输入团队描述" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">团队状态</label>
+            <div class="layui-input-inline">
+                <select name="state" lay-verify="required" lay-search="">
+                    <option value="0">有效</option>
+                    <option value="1">无效</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label" pane>团队负责人</label>
+            <div class="layui-input-inline">
+                <select name="users" id="users" lay-filter="users" lay-search="" lay-affix="clear"></select>
+                <input type="hidden" name="userId" id="userId">
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <div class="btn-list">
+                <div class="btnlist">
+                    <button class="layui-btn layui-btn-primary layui-border-green" lay-submit lay-filter="save"
+                            lay-type="saveContinue">
+                        <i class="layui-icon  layui-icon-add-circle">&nbsp;</i>保存并继续
+                    </button>
+                    <button class="layui-btn layui-btn-primary layui-border-blue" lay-submit lay-filter="save"
+                            lay-type="saveClose">
+                        <i class="layui-icon layui-icon-add-1">&nbsp;</i>保存并关闭
+                    </button>
+                    <button class="layui-btn layui-btn-primary layui-border-red" onclick="refresh();">
+                        <i class="layui-icon layui-icon-close-fill">&nbsp;</i>关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script th:src="@{/static/layui.js}"></script>
+<script th:src="@{/static/lay-config.js}"></script>
+<script th:replace="~{base::ctx}"></script>
+<script>
+    layui.use(['jquery', 'layer', 'form', 'laySelect'], function () {
+        const layer = layui.layer;
+        const form = layui.form;
+        const $ = layui.jquery;
+        const select = layui.laySelect;
+
+        /**
+         * 加载人员数据源
+         */
+        select.render({
+            elem: "#users",
+            url: ctx + 'queryUsersAllBySelect',
+            select: 10000,
+            title: '请选择负责人',
+            format: function (data) {
+                return parseSelectData(data);
+            },
+            success: function (data, activeData) {
+                $("#userId").val(activeData);
+            },
+            onselect: function (data) {
+                $("#userId").val(data);
+            }
+        });
+
+
+        /**
+         * 保存
+         */
+        form.on('submit(save)', function (data) {
+            const field = data.field;
+            const layType = data.elem.getAttribute("lay-type");
+            if (field.userId === undefined || field.userId === '') {
+                layer.msg('请选择团队负责人!', {icon: 2});
+                return false;
+            }
+            post(ctx + "settingManager/addTeamSource", field, (res) => {
+                layer.msg(res.msg, {icon: res.code === 200 ? 1 : 2}, () => {
+                    if (res.code === 200) {
+                        if (layType === "saveClose") {
+                            refresh();
+                        } else {
+                            location.reload();
+                        }
+                    }
+                });
+            })
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

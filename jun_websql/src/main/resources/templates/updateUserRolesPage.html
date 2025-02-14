@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>用户修改</title>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/static/img/favicon.ico}" media="screen"/>
+    <link rel="stylesheet" th:href="@{/static/css/layui.css}" media="all"/>
+</head>
+<style>
+    .layui-input-inline b {
+        color: rgba(68, 65, 30, 0.44);
+        font-size: 13px;
+        margin: 0 10px;
+        font-weight: normal;
+    }
+
+    .lg-width {
+        width: 250px;
+    }
+
+    .menus {
+        padding: 10px 30px;
+        box-sizing: border-box;
+    }
+</style>
+<body>
+
+<div class="menus">
+    <form class="layui-form layui-form-pane" action="">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label" pane>登录账号</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input lg-width" disabled id="userName" th:value="${user.userName}">
+                <input type="hidden" id="userId" name="userId" th:value="${user.userId}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label" pane>用户名称</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input lg-width" id="name" name="name" th:value="${user.name}"
+                       lay-verify="required" lay-affix="clear">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label" pane>用户邮箱</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input lg-width" id="email" name="email" th:value="${user.email}"
+                       lay-verify="email" lay-affix="clear">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label" pane>状态</label>
+            <div class="layui-input-inline">
+                <select name="state" id="state">
+                    <option value="0">有效</option>
+                    <option value="1">无效</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label" pane>角色配置</label>
+            <div class="layui-input-inline" style="width: 500px;" id="checkboxId"></div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label" pane>团队配置</label>
+            <div class="layui-input-inline">
+                <div class="layui-input-inline" style="width: 500px;" id="teamList"></div>
+                <input type="hidden" name="teamId" id="teamId">
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <div class="btn-list">
+                <div class="btnlist">
+                    <button class="layui-btn layui-btn-primary layui-border-blue" lay-submit lay-filter="save"
+                            lay-type="saveClose">
+                        <i class="layui-icon layui-icon-edit">&nbsp;</i>修改
+                    </button>
+                    <button class="layui-btn layui-btn-primary layui-border-red" onclick="refresh();">
+                        <i class="layui-icon layui-icon-close-fill">&nbsp;</i>关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script th:src="@{/static/layui.js}"></script>
+<script th:replace="~{base::ctx}"></script>
+<script th:inline="javascript">
+
+    layui.use(['jquery', 'layer', 'form'], function () {
+        const layer = layui.layer;
+        const form = layui.form;
+        const $ = layui.jquery;
+
+        /**
+         * 加载团队数据源
+         */
+        post(ctx + "settingManager/queryTeamAllBySelect", null, (res) => {
+            if (res.code === 0) {
+                for (let i in res.data) {
+                    let item = res.data[i];
+                    $("#teamList").append('<input type="checkbox" name="teams" value="' + item.code + '" title="' + "(" + item.code + ")" + item.value + '">');
+                }
+                form.render();
+                let sysTeams = [[${teams}]];
+                $(sysTeams.split(",")).each(function (i, dom) {
+                    $("input:checkbox[value='" + dom + "']").attr('checked', 'true');
+                });
+                form.render();
+            } else {
+                layer.msg(res.msg, {icon: 2});
+            }
+        })
+
+        //加载角色信息并回显
+        post(ctx + "settingManager/queryRolesSelect", null, (res) => {
+            if (res.code === 200) {
+                for (let i in res.data) {
+                    let item = res.data[i];
+                    $("#checkboxId").append('<input type="checkbox" name="roles" value="' + item.role + '" title="' + "(" + item.role + ")" + item.description + '">');
+                }
+                form.render();
+                let sysRoleName = [[${user.sysRoleName}]];
+                $(sysRoleName.split(",")).each(function (i, dom) {
+                    $("input:checkbox[value='" + dom + "']").attr('checked', 'true');
+                });
+                form.render();
+            } else {
+                layer.msg(res.msg, {icon: 2});
+            }
+        })
+
+        /**
+         * 状态回显
+         * @type {*[][]}
+         */
+        let state = [[${user.state}]];
+        $('#state').val(state);
+        form.render();
+
+        /**
+         * 保存
+         */
+        form.on('submit(save)', function (data) {
+            const field = data.field;
+            let role_value = [];
+            let roles = document.getElementsByName("roles");
+            $.each(roles, function (i) {
+                if (roles[i].checked) {
+                    role_value.push(roles[i].value);
+                }
+            });
+            if (role_value.length === 0) {
+                layer.msg("请选择角色!", {icon: 2});
+                return false;
+            }
+            field["sysRoleName"] = role_value.toString();
+            let team_value = [];
+            let teams = document.getElementsByName("teams");
+            $.each(teams, function (i) {
+                if (teams[i].checked) {
+                    team_value.push(teams[i].value);
+                }
+            });
+            if (team_value.length === 0) {
+                layer.msg("请选择团队!", {icon: 2});
+                return false;
+            }
+            field["sysTeamName"] = team_value.toString();
+            post(ctx + "settingManager/updateUserRole", field, (res) => {
+                layer.msg(res.msg, {icon: res.code === 200 ? 1 : 2}, () => {
+                    if (res.code === 200) {
+                        refresh();
+                    }
+                });
+            })
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

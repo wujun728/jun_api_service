@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>数据源管理</title>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/static/img/favicon.ico}" media="screen"/>
+    <link rel="stylesheet" th:href="@{/static/css/layui.css}" media="all"/>
+</head>
+<body>
+<form class="layui-form">
+    <div class="layui-panel">
+        <div style="margin: 15px;">
+            <div class="layui-form-item">
+                <label class="layui-form-label">连接名称:</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="dbName" id="dbname" placeholder="请输入连接名称" class="layui-input"
+                           lay-affix="clear">
+                </div>
+                <label class="layui-form-label">登录账号:</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="dbAccount" id="dbAccount" placeholder="请输入登录账号" class="layui-input"
+                           lay-affix="clear">
+                </div>
+                <label class="layui-form-label">连接地址:</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="dbUrl" id="dbUrl" placeholder="请输入连接地址" class="layui-input"
+                           lay-affix="clear">
+                </div>
+                <div class="layui-input-normal">
+                    <button class="layui-btn layui-btn-primary layui-border-green search-btn" lay-submit id="search"
+                            lay-filter="table-search">
+                        <i class="layui-icon layui-icon-search"> </i>查 询
+                    </button>
+                    <button class="layui-btn layui-btn-primary layui-border-blue"
+                            onclick="openPage('添加数据源',ctx+'dataSourceManager/addSourcePage')
+                            return false;">
+                        <i class="layui-icon layui-icon-add-1">&nbsp;</i>添 加
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-panel" style="margin-top: 15px;">
+        <div class="layui-form nowrap">
+            <table class="layui-hide" id="dataTable" lay-filter="dataTable"></table>
+        </div>
+    </div>
+</form>
+</body>
+<script th:src="@{/static/layui.js}"></script>
+<script th:replace="~{base::ctx}"></script>
+<script type="text/html" id="toolbarTable">
+    <div class="layui-clear-space">
+        <a class="layui-btn layui-btn-xs" lay-event="view">查看</a>
+        <button type="button" class="layui-btn layui-btn-xs layui-bg-orange" lay-event="showDataSourcePassword">解密</button>
+        <a class="layui-btn layui-bg-blue layui-btn-xs" lay-event="update">编辑</a>
+        <a class="layui-btn layui-bg-red layui-btn-xs" lay-event="delete">删除</a>
+    </div>
+</script>
+<script>
+    layui.use(function () {
+        const layer = layui.layer;
+        const form = layui.form;
+        const $ = layui.jquery;
+        const table = layui.table;
+        const laytpl = layui.laytpl;
+
+        table.render({
+            elem: '#dataTable',
+            url: ctx + 'dataSourceManager/dataSourceList',
+            toolbar: true,
+            defaultToolbar: ['filter', 'exports', 'print'],
+            page: true,
+            height: '525',
+            cols: [
+                [
+                    {field: 'id', title: 'id', sort: true, fixed: true},
+                    {field: 'dbName', title: '连接名称', sort: true, fixed: true},
+                    {field: 'driverClass', title: '驱动类型', sort: true, fixed: true},
+                    {field: 'dbCheckUrl', title: '验证语句', sort: true, fixed: true},
+                    {field: 'initialSize', title: '初始连接数', sort: true, fixed: true},
+                    {field: 'maxActive', title: '最大连接数', sort: true, fixed: true},
+                    {field: 'maxIdle', title: '最大空闲数', sort: true, fixed: true},
+                    {field: 'maxWait', title: '最大等待时间', sort: true, fixed: true},
+                    {field: 'dbState', title: '状态', sort: true, fixed: true},
+                    {fixed: 'right', title: '操作', width: 190, toolbar: '#toolbarTable'}
+                ]
+            ],
+            parseData: res => parseData(res)
+        });
+
+        table.on('tool(dataTable)', function (obj) {
+            var data = obj.data;
+            switch (obj.event) {
+                case 'view':
+                    let content = laytpl('<div style="margin: 20px;"><table class="layui-table"><tr><td>地址：{{= d.address }} </td></tr><tr> <td>账号：{{= d.name}}</td></tr> <tr> <td>密码： {{= d.password}} </td></tr></table></div>').render({
+                        address: data.dbUrl,
+                        name: data.dbAccount,
+                        password: data.dbPassword
+                    });
+                    openContent("查看密钥", content);
+                    break;
+                case 'delete':
+                    layer.confirm('您确定要删除吗?', {icon: 3}, function () {
+                        post(ctx + "dataSourceManager/deleteDataSource/" + data.id, null, (res) => {
+                            layer.msg(res.msg, {icon: res.code === 200 ? 1 : 2}, () => {
+                                $(".search-btn").click();
+                            });
+                        })
+                    }, function () {
+                    });
+                    break;
+                case 'update':
+                    layer.prompt({
+                        formType: 2,
+                        value: data.executeTime,
+                        anim: 'slideLeft',
+                        title: '请输入新的名称',
+                        area: ['300px', '200px']
+                    }, function (value, index) {
+                        layer.confirm("确认修改名称？", function () {
+                            post(ctx + "dataSourceManager/updateDataSourceName?id=" + data.id + "&name=" + value, null, (res) => {
+                                layer.msg(res.msg, {icon: res.code === 200 ? 1 : 2}, () => {
+                                    $(".search-btn").click();
+                                    layer.closeAll();
+                                });
+                            })
+                        });
+                    });
+                    break;
+                case 'showDataSourcePassword':
+                    post(ctx + "dataSourceManager/showDataSourcePassword?id=" + data.id, null, (res) => {
+                        if (res.code === 200) {
+                            let content = laytpl('<div style="margin: 20px;"><table class="layui-table"><tr><td>地址：{{= d.address }} </td></tr><tr> <td>账号：{{= d.name}}</td></tr> <tr> <td>密码： {{= d.password}} </td></tr></table></div>').render({
+                                address: res.data.dbUrl,
+                                name: res.data.dbAccount,
+                                password: res.data.dbPassword
+                            });
+                            openContent("查看原始密码", content);
+                        } else {
+                            layer.msg(res.msg, {icon: 2});
+                        }
+                    })
+                    break;
+            }
+        });
+
+        form.on('submit(table-search)', function (data) {
+            const field = data.field;
+            table.reloadData('dataTable', {
+                scrollPos: true,
+                where: field
+            });
+            return false;
+        });
+    });
+
+</script>
+</html>

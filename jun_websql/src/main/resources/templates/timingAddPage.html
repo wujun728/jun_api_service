@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>WEBSQL-SQL执行计划新增</title>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/static/img/favicon.ico}" media="screen"/>
+    <link rel="stylesheet" th:href="@{/static/css/layui.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/static/code/codemirror.css}" media="all"/>
+    <link rel="stylesheet" th:href=@{/static/code/show-hint.css} media="all"/>
+    <style>
+        .sqlTxt {
+            border: 1px solid;
+            border-radius: 12px;
+            box-shadow: 2px 2px 5px #bbb;
+            font-size: 20px;
+            height: 600px;
+        }
+
+        .CodeMirror {
+            border-radius: 12px;
+        }
+
+        .sqlTab {
+            border: 1px solid;
+            border-radius: 12px;
+            box-shadow: 2px 2px 5px #bbb;
+            font-size: 14px;
+            margin: 12px;
+            position: relative;
+        }
+
+        .menus {
+            border: 1px solid;
+            border-radius: 12px;
+            box-shadow: 2px 2px 5px #bbb;
+            margin: 5px;
+        }
+
+        .layui-form-item {
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="menus" style="margin:5px;">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">数据来源:</label>
+            <div class="layui-input-inline">
+                <select name="timingName" id="timingName" lay-filter="timingName" lay-search=""
+                        lay-affix="clear"></select>
+            </div>
+            <label class="layui-form-label">数据去向:</label>
+            <div class="layui-input-inline">
+                <select name="syncName" id="syncName" lay-filter="syncName" lay-search="" lay-affix="clear"></select>
+            </div>
+            <label class="layui-form-label">数据表名:</label>
+            <div class="layui-input-inline" style="width: 150px;">
+                <input type="text" name="syncTable" id="syncTable" class="layui-input" placeholder="同步数据源表名"
+                       lay-affix="clear"/>
+            </div>
+            <label class="layui-form-label">作业名称:</label>
+            <div class="layui-input-inline" style="width: 150px;">
+                <input type="text" id="title" name="title" class="layui-input" lay-affix="clear"
+                       placeholder="作业名称"/>
+            </div>
+            <label class="layui-form-label">CRON:</label>
+            <div class="layui-input-inline" style="width: 150px;">
+                <input type="text" id="executeTimeHidden" name="executeTimeHidden" class="layui-input" lay-affix="clear"
+                       placeholder="定时表达式"/>
+            </div>
+            <div class="">
+
+                <button class="layui-btn layui-btn-primary layui-border-green" lay-submit lay-filter="save">
+                    <i class="layui-icon  layui-icon-add-circle">&nbsp;</i>保存
+                </button>
+
+                <button class="layui-btn layui-btn-primary layui-border-blue"
+                        onclick="openPage('在线生成Cron后 复制Cron 表达式','http://cron.qqe2.com/',3001);return false">
+                    <i class="layui-icon layui-icon-time">&nbsp;</i> CRON
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="sqlTxt">
+    <textarea id='sqlText' style="width: 100%;height: 600px;display:block;"></textarea>
+</div>
+
+<script th:src="@{/static/layui.js}"></script>
+<script th:replace="~{base::ctx}"></script>
+<script th:src="@{/static/lay-config.js}"></script>
+<script th:src="@{/static/code/codemirror.js}"></script>
+<script th:src="@{/static/code/matchbrackets.js}"></script>
+<script th:src="@{/static/code/sql.js}"></script>
+<script th:src="@{/static/code/show-hint.js}"></script>
+<script th:src="@{/static/code/sql-hint.js}"></script>
+<script th:src="@{/static/base64.min.js}"></script>
+<script>
+    layui.use(['jquery', 'layer', 'form', 'laySelect'], function () {
+        const layer = layui.layer;
+        const form = layui.form;
+        const $ = layui.jquery;
+        const select = layui.laySelect;
+
+        /**
+         * 编辑器初始化
+         * @type {CodeMirror}
+         */
+        const editor = CodeMirror.fromTextArea(document.getElementById("sqlText"), {
+            lineNumbers: true,
+            mode: {
+                name: "text/x-plsql"
+            },
+            matchBrackets: true,
+            styleActiveLine: true,
+            indentWithTabs: true,
+            smartIndent: true,
+            lineNumbers: true,
+            spellcheck: true,
+            lineWrapping: true,
+            extraKeys: {
+                'Ctrl': 'autocomplete',
+                Tab: function (cm) {
+                    let spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
+                    cm.replaceSelection(spaces);
+                }
+            }
+        });
+        editor.setSize('auto', '600px');
+        editor.on('keypress', () => {
+            editor.showHint();
+        });
+
+        /**
+         * 数据来源
+         */
+        let activeDataSource;//选中的数据源
+        select.render({
+            elem: "#timingName",
+            url: ctx + 'dataSourceManager/findDataSourceList',
+            select: 10000,
+            title: '请选择数据来源数据源',
+            format: function (data) {
+                return parseSelectData(data);
+            },
+            success: function (data, activeData) {
+                //默认选中的数据源需要单独赋值，不会走onSelect
+                activeDataSource = activeData == null ? null : activeData[0].code;
+            },
+            onselect: function (data) {
+                activeDataSource = data;
+            }
+        });
+
+        /**
+         * 数据去向
+         */
+        let activeDataSource2;//选中的数据源
+        select.render({
+            elem: "#syncName",
+            url: ctx + 'dataSourceManager/findDataSourceList',
+            select: 10000,
+            title: '请选择数据去向数据源',
+            format: function (data) {
+                return parseSelectData(data);
+            },
+            success: function (data, activeData) {
+                //默认选中的数据源需要单独赋值，不会走onSelect
+                activeDataSource2 = activeData == null ? null : activeData[0].code;
+                editorHintSettings();
+            },
+            onselect: function (data) {
+                activeDataSource2 = data;
+                editorHintSettings();
+            }
+        });
+
+        /**
+         * 设置编辑器提示表名及字段功能
+         */
+        function editorHintSettings() {
+            post(ctx + "sqlManager/findTableField?database=" + activeDataSource, null, (res) => {
+                if (res.code !== 200 || res.data === null) {
+                    console.error("获取表名及字段失败,无法提供编辑器提示功能!" + res.msg);
+                    return false;
+                }
+                editor.setOption('hintOptions', {
+                    completeSingle: false,
+                    tables: res.data
+                });
+            });
+        }
+
+        /**
+         * 执行SQL
+         */
+        form.on('submit(save)', function (data) {
+            let sqlContent = editor.getValue().trim();
+            if (sqlContent === "" || sqlContent == null) {
+                layer.msg("SQL语句为空，无需保存哦~", {icon: 2});
+                return false;
+            }
+            if (activeDataSource === "" || activeDataSource == null) {
+                layer.msg("请选择数据来源~", {icon: 2});
+                $("#msgDiv").show();
+                $("#msgSpan").text("ERROR:请选择数据来源~");
+                return false;
+            }
+            if (activeDataSource2 === "" || activeDataSource2 == null) {
+                layer.msg("请选择数据去向~", {icon: 2});
+                $("#msgDiv").show();
+                $("#msgSpan").text("ERROR:请选择数据去向~");
+                return false;
+            }
+            const field = data.field;
+            let params = {
+                'timingName': activeDataSource,
+                'syncName': activeDataSource2,
+                'executeTime': field.executeTimeHidden,
+                'sqlText': Base64.encode(sqlContent),
+                'state': '休眠',
+                'title': field.title,
+                'syncTable': field.syncTable
+            };
+            post(ctx + "timingManager/addTimingData", params, (res) => {
+                layer.msg(res.msg, {icon: res.code === 200 ? 1 : 2}, (res) => {
+                    location.reload();
+                });
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

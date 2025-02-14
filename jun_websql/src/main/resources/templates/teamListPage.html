@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>团队管理</title>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/static/img/favicon.ico}" media="screen"/>
+    <link rel="stylesheet" th:href="@{/static/css/layui.css}" media="all"/>
+</head>
+<body>
+<form class="layui-form">
+    <div class="layui-panel">
+        <div style="margin: 15px;">
+            <div class="layui-form-item">
+                <label class="layui-form-label">团队名称:</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="teamName" id="teamName" placeholder="请输入团队名称" class="layui-input">
+                </div>
+                <div class="layui-input-normal">
+                    <button class="layui-btn layui-btn-primary layui-border-green search-btn" id="search" lay-submit
+                            lay-filter="table-search">
+                        <i class="layui-icon layui-icon-search"> </i>查 询
+                    </button>
+                    <button class="layui-btn layui-btn-primary layui-border-blue"
+                            onclick="openPage('新增团队',ctx+'settingManager/addTeamPage')
+                            return false;">
+                        <i class="layui-icon layui-icon-add-1">&nbsp;</i>添 加
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="layui-panel" style="margin-top: 15px;">
+        <div class="layui-form nowrap">
+            <table class="layui-hide" id="dataTable" lay-filter="dataTable"></table>
+        </div>
+    </div>
+</form>
+</body>
+<script th:src="@{/static/layui.js}"></script>
+<script th:replace="~{base::ctx}"/>
+<script type="text/html" id="toolbarTable">
+    <div class="layui-clear-space">
+        <a class="layui-btn layui-btn-xs" lay-event="view">查看</a>
+        <a class="layui-btn layui-bg-red layui-btn-xs" lay-event="delete">删除</a>
+    </div>
+</script>
+<script>
+    layui.use(function () {
+        const layer = layui.layer;
+        const form = layui.form;
+        const $ = layui.jquery;
+        const table = layui.table;
+        const laytpl = layui.laytpl;
+        const util = layui.util;
+
+        table.render({
+            elem: '#dataTable',
+            url: ctx + 'settingManager/queryTeamList',
+            toolbar: true,
+            defaultToolbar: ['filter', 'exports', 'print'],
+            page: true,
+            height: '525',
+            cols: [
+                [
+                    {field: 'id', title: 'id', sort: true, fixed: true},
+                    {field: 'teamName', title: '团队名称', sort: true, fixed: true},
+                    {field: 'description', title: '团队描述', sort: true, fixed: true},
+                    {field: 'userName', title: '团队负责人', sort: true, fixed: true},
+                    {field: 'stateName', title: '状态', sort: true, fixed: true},
+                    {field: 'createTime', title: '创建时间', sort: true, fixed: true},
+                    {fixed: 'right', title: '操作', width: 134, minWidth: 125, toolbar: '#toolbarTable'}
+                ]
+            ],
+            parseData: res => parseData(res)
+        });
+
+        table.on('tool(dataTable)', function (obj) {
+            var data = obj.data;
+            switch (obj.event) {
+                case 'view':
+                    openPage('查看授权资源信息', ctx + 'settingManager/showTeamResourcePage/' + data.id)
+                    break;
+                case 'delete':
+                    layer.confirm('您确定要删除吗?', {icon: 3}, function () {
+                        post(ctx + "settingManager/deleteTeam/" + data.id, null, (res) => {
+                            layer.msg(res.msg, {icon: res.code === 200 ? 1 : 2}, () => {
+                                $(".search-btn").click();
+                            });
+                        })
+                    }, function () {
+                    });
+                    break;
+            }
+        });
+
+        form.on('submit(table-search)', function (data) {
+            const field = data.field;
+            table.reloadData('dataTable', {
+                scrollPos: true,
+                where: field
+            });
+            return false;
+        });
+    });
+</script>
+</html>

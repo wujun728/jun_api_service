@@ -1,0 +1,183 @@
+{
+    "homeInfo": {
+        "title": "首页",
+        "href": "main"
+    },
+    "logoInfo": {
+        "title": "WEB SQL",
+        "image": "images/logo.png",
+        "href": ""
+    },
+    "menuInfo": [
+        {
+            "title": "常规管理",
+            "icon": "layui-icon layui-icon-app",
+            "href": "",
+            "target": "_self",
+            "child": [
+                {
+                    "title": "数据源管理",
+                    "href": "",
+                    "icon": "layui-icon layui-icon-snowflake",
+                    "target": "_self",
+                    "child": [
+                        {
+                            "title": "数据源列表",
+                            "href": "dataSourceManager/page",
+                            "icon": "layui-icon",
+                            "target": "_self"
+                        }
+                    ]
+                },
+                {
+                    "title": "SQL管理",
+                    "href": "",
+                    "icon": "layui-icon layui-icon-console",
+                    "target": "_self",
+                    "child": [
+                        {
+                            "title": "SQL窗口",
+                            "href": "sqlManager/sqlPage",
+                            "icon": "layui-icon",
+                            "target": "_self"
+                        },
+                        {
+                            "title": "SQL列表",
+                            "href": "sqlManager/sqlTextPage",
+                            "icon": "layui-icon",
+                            "target": "_self"
+                        }
+                    ]
+                },
+                {
+                    "title": "元数据管理",
+                    "icon": "layui-icon layui-icon-tabs",
+                    "target": "_self",
+                    "href": "sqlManager/metaTablePage"
+                },
+                {
+                    "title": "ETL管理",
+                    "href": "",
+                    "icon": "layui-icon layui-icon-template-1",
+                    "target": "_self",
+                    "child": [
+                        {
+                            "title": "新增作业任务",
+                            "href": "timingManager/addPage",
+                            "icon": "layui-icon",
+                            "target": "_self"
+                        },
+                        {
+                            "title": "作业任务列表",
+                            "href": "timingManager/listPage",
+                            "icon": "layui-icon",
+                            "target": "_self"
+                        },
+                        {
+                            "title": "作业执行记录",
+                            "href": "timingManager/historyPage",
+                            "icon": "layui-icon",
+                            "target": "_self"
+                        }
+                    ]
+                },
+                {
+                    "title": "监测管理",
+                    "href": "",
+                    "icon": "layui-icon layui-icon-template-1",
+                    "target": "_self",
+                    "child": [
+                        {
+                            "title": "新增监测任务",
+                            "href": "detectionManager/addPage",
+                            "icon": "layui-icon",
+                            "target": "_self"
+                        },
+                        {
+                            "title": "检测任务列表",
+                            "href": "detectionManager/listPage",
+                            "icon": "layui-icon",
+                            "target": "_self"
+                        },
+                        {
+                            "title": "检测任务报表",
+                            "href": "detectionManager/reportPage",
+                            "icon": "layui-icon",
+                            "target": "_self"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "系统管理",
+            "icon": "layui-icon layui-icon-util",
+            "href": "",
+            "target": "_self",
+            "child": [
+                {
+                    "title": "日志管理",
+                    "href": "",
+                    "icon": "layui-icon layui-icon-list",
+                    "target": "_self",
+                    "child": [
+                        {
+                            "title": "执行SQL记录",
+                            "href": "logManager/logPage",
+                            "icon": "layui-icon",
+                            "target": "_self"
+                        },
+                        {
+                            "title": "登录系统记录",
+                            "href": "logManager/userLogPage",
+                            "icon": "layui-icon",
+                            "target": "_self"
+                        }
+                    ]
+                },
+                {
+                    "title": "用户管理",
+                    "icon": "layui-icon layui-icon-username",
+                    "target": "_self",
+                    "href": "settingManager/userRolePage"
+                },
+                {
+                    "title": "团队管理",
+                    "icon": "layui-icon layui-icon-group",
+                    "target": "_self",
+                    "href": "settingManager/teamManagerPage"
+                },
+                {
+                    "title": "导出管理",
+                    "icon": "layui-icon layui-icon-export",
+                    "target": "_self",
+                    "href": "settingManager/exportLogPage"
+                },
+                {
+                    "title": "参数设置",
+                    "icon": "layui-icon layui-icon-set-fill",
+                    "target": "_self",
+                    "href": "settingManager/sysSetUpPage"
+                },
+                {
+                    "title": "驱动管理",
+                    "icon": "layui-icon layui-icon-set-fill",
+                    "target": "_self",
+                    "href": "settingManager/driverConfigPage"
+                },
+                {
+                    "title": "数据库管理",
+                    "icon": "layui-icon layui-icon-engine",
+                    "target": "_self",
+                    "href": "settingManager/dataBaseConsolePage"
+                },
+                {
+                    "title": "连接池管理",
+                    "icon": "layui-icon layui-icon-chart",
+                    "target": "_self",
+                    "href": "settingManager/druidConsolePage"
+                }
+            ]
+        }
+    ]
+}
