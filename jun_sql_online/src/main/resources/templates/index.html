@@ -1,0 +1,107 @@
+<!--#layout("/common/layout.html",{"jsBase":"/js/code/"}){ -->
+<link rel="stylesheet" href="${ctxPath}/plugins/codemirror-5.59.4/lib/codemirror.css" rel="external nofollow" >
+<link rel="stylesheet" href="${ctxPath}/plugins/codemirror-5.59.4/addon/fold/foldgutter.css" rel="external nofollow" >
+<link rel="stylesheet" href="${ctxPath}/plugins/codemirror-5.59.4/addon/hint/show-hint.css" rel="external nofollow" >
+<link rel="stylesheet" href="${ctxPath}/plugins/codemirror-5.59.4/addon/lint/lint.css" rel="external nofollow" >
+<link rel="stylesheet" href="${ctxPath}/plugins/codemirror-5.59.4/theme/idea.css" rel="external nofollow" >
+
+<script src="${ctxPath}/plugins/codemirror-5.59.4/lib/codemirror.js"></script>
+<script src="${ctxPath}/plugins/codemirror-5.59.4/addon/comment/comment.js"></script>
+<script src="${ctxPath}/plugins/codemirror-5.59.4/addon/selection/active-line.js"></script>
+<script src="${ctxPath}/plugins/codemirror-5.59.4/keymap/sublime.js"></script>
+<script src="${ctxPath}/plugins/codemirror-5.59.4/addon/hint/show-hint.js"></script>
+<script src="${ctxPath}/plugins/codemirror-5.59.4/mode/clike/clike.js"></script>
+<script src="${ctxPath}/plugins/codemirror-5.59.4/addon/fold/foldcode.js"></script>
+<script src="${ctxPath}/plugins/codemirror-5.59.4/addon/fold/foldgutter.js"></script>
+<script src="${ctxPath}/plugins/codemirror-5.59.4/addon/fold/brace-fold.js"></script>
+<script src="${ctxPath}/plugins/codemirror-5.59.4/addon/fold/indent-fold.js"></script>
+<script src="${ctxPath}/plugins/codemirror-5.59.4/addon/fold/comment-fold.js"></script>
+<script src="${ctxPath}/plugins/codemirror-5.59.4/addon/edit/closebrackets.js"></script>
+<script src="${ctxPath}/plugins/codemirror-5.59.4/addon/edit/matchbrackets.js"></script>
+<div class="layui-container">
+    <div class="layui-row">
+        <blockquote class="layui-elem-quote">
+            <h3>BeetlSQL，更好用的DAO框架 </h3><p/>本网站仅供初步体验BeetlSQL，服务器资源有限，沙箱机制有限，请不要暴力破坏
+            <hr class="layui-bg-red">
+            <a href="https://www.kancloud.cn/xiandafu/beetlsql3_guide" target="_blank"><u>BeetlSQL文档</u></a>
+            <a href="https://gitee.com/xiandafu/beetlsql/tree/master/sql-samples" target="_blank"><u>更多例子(100+)</u></a>
+            <a href="https://gitee.com/longkyo/beetl-sql-online" target="_blank"><u>访问Online源码</u></a>
+            <a href="https://gitee.com/longkyo/beetl-sql-online/repository/archive/master.zip" target="_blank"><u>下载运行Online</u></a>
+            <a href="http://ibeetl.com/beetlonline/" target="_blank"><u>Beetl Online</u></a>
+
+        </blockquote>
+        <div class="layui-row">
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">选择模板</label>
+                    <div class="layui-input-inline">
+                        <select name="quiz1">
+                            <option value="">请选择模板</option>
+                            <!--#for(fileName in fileNames){
+                            -->
+                                <option value="${fileName}">${fileName}</option>
+                            <!--#}  -->
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button type="button" class="layui-btn ext-toolbar" data-type="run">Run</button>
+                </div>
+                <div class="layui-inline" id="verify-div" style="display: none;">
+                    <div class="layui-inline">
+                        <input type="text" name="verify-code" id="verify-code" autocomplete="off" placeholder="请输入验证码" class="layui-input">
+                    </div>
+                    <div class="layui-inline">
+                        <img src="/verifyCode"  id="verify-code-image" style="width:100px;height:40px;">
+                    </div>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-col-xs12 layui-col-md8">
+            <textarea placeholder="请输入内容" class="layui-textarea" rows="25" id="codeTextArea"></textarea>
+        </div>
+        <div class="layui-col-xs12 layui-col-md4">
+            <div class="layui-tab" lay-filter="demo">
+                <ul class="layui-tab-title">
+                    <li class="layui-this" lay-id="11">用户表</li>
+                    <li lay-id="22">部门表</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <table id="userTable" lay-filter="userTable"></table>
+                    </div>
+                    <div class="layui-tab-item">
+                        <table id="departmentTable" lay-filter="departmentTable"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-inline">
+            <button type="button" class="layui-btn ext-toolbar" data-type="run">Run</button>
+        </div>
+
+    </div>
+    <div class="layui-row">
+        <div class="layui-col-md12">
+            <div class="layui-card-body">
+                <div class="layui-col-md12">
+                    <textarea id="runResult" rows="10" cols="150" ></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--#}  -->
+<script>
+    layui.use(['index'], function(){
+        var index = layui.index
+        index.init();
+    });
+</script>
