@@ -17,6 +17,8 @@
 
 	<modules>   
 		<module>jun_api_online_groovy</module>
+		<module>jun_lowcode_api</module>
+		<module>jun_lowcode_api_demo</module>
 	</modules>
 
 	<dependencies>
