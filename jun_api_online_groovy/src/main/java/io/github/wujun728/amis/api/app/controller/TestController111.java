@@ -56,37 +56,37 @@ public class TestController111 {
 
 		Map<String, Object> sqlParamDelete = DbUtil.buildSqlParams(data, DbUtil.deleteSQL(data), DbUtil.deleteSQLParams(data),"delete");
 //		DbUtil.executeSQL(ds,sqlParamDelete,DbUtil.insertSQL(data));
-		Db.use(DbUtil.MASTER).delete(" delete from api_config where path = ? ",new Object[]{sqlParamDelete.get("path")});
+		Db.use(DbUtil.MASTER).update(" delete from api_config where path = ? ",new Object[]{sqlParamDelete.get("path")});
 		Db.use(DbUtil.MASTER).save("api_config",DbUtil.getPkNames(ds,"api_config"),DbUtil.getTableRecord(ds,"api_config",sqlParamDelete));
 		//DbUtil.printSQLParams(data);
 
 
 		Map<String, Object> sqlParamSave = DbUtil.buildSqlParams(data, DbUtil.insertSQL(data), DbUtil.insertSQLParams(data),"save");
-		Db.use(DbUtil.MASTER).delete(" delete from api_config where path = ? ",new Object[]{sqlParamSave.get("path")});
+		Db.use(DbUtil.MASTER).update(" delete from api_config where path = ? ",new Object[]{sqlParamSave.get("path")});
 		Db.use(DbUtil.MASTER).save("api_config",DbUtil.getPkNames(ds,"api_config"),DbUtil.getTableRecord(ds,"api_config",sqlParamSave));
 //		DbUtil.executeSQL(ds,sqlParamSave,DbUtil.insertSQL(data));
 
 		Map<String, Object> sqlParamLoad = DbUtil.buildSqlParams(data, DbUtil.loadSQL(data), DbUtil.loadSQLParams(data),"load");
-		Db.use(DbUtil.MASTER).delete(" delete from api_config where path = ? ",new Object[]{sqlParamLoad.get("path")});
+		Db.use(DbUtil.MASTER).update(" delete from api_config where path = ? ",new Object[]{sqlParamLoad.get("path")});
 		Db.use(DbUtil.MASTER).save("api_config",DbUtil.getPkNames(ds,"api_config"),DbUtil.getTableRecord(ds,"api_config",sqlParamLoad));
 //		DbUtil.executeSQL(ds,sqlParamLoad,DbUtil.insertSQL(data));
 
 		String paramsCount = "[]";
 		Map<String, Object> sqlParamCount = DbUtil.buildSqlParams(data, DbUtil.pageListCountSQL(data), paramsCount,"count");
-		Db.use(DbUtil.MASTER).delete(" delete from api_config where path = ? ",new Object[]{sqlParamCount.get("path")});
+		Db.use(DbUtil.MASTER).update(" delete from api_config where path = ? ",new Object[]{sqlParamCount.get("path")});
 		Db.use(DbUtil.MASTER).save("api_config",DbUtil.getPkNames(ds,"api_config"),DbUtil.getTableRecord(ds,"api_config",sqlParamCount));
 //		DbUtil.executeSQL(ds,sqlParamCount,DbUtil.insertSQL(data));
 
 
 		String pageListParams = "[{'name':'pageNumber','type':'int'},{'name':'pageSize','type':'int'}]";
 		Map<String, Object> sqlParamPage = DbUtil.buildSqlParams(data, DbUtil.pageListSQL(data), pageListParams,"page");
-		Db.use(DbUtil.MASTER).delete(" delete from api_config where path = ? ",new Object[]{sqlParamPage.get("path")});
+		Db.use(DbUtil.MASTER).update(" delete from api_config where path = ? ",new Object[]{sqlParamPage.get("path")});
 		Db.use(DbUtil.MASTER).save("api_config",DbUtil.getPkNames(ds,"api_config"),DbUtil.getTableRecord(ds,"api_config",sqlParamPage));
 //		DbUtil.executeSQL(ds,sqlParamPage,DbUtil.insertSQL(data));
 
 
 		Map<String, Object> sqlParamUpdate = DbUtil.buildSqlParams(data, DbUtil.updateSQL(data), DbUtil.updateSQLParams(data),"update");
-		Db.use(DbUtil.MASTER).delete(" delete from api_config where path = ? ",new Object[]{sqlParamUpdate.get("path")});
+		Db.use(DbUtil.MASTER).update(" delete from api_config where path = ? ",new Object[]{sqlParamUpdate.get("path")});
 		Db.use(DbUtil.MASTER).save("api_config",DbUtil.getPkNames(ds,"api_config"),DbUtil.getTableRecord(ds,"api_config",sqlParamUpdate));
 //		DbUtil.executeSQL(ds,sqlParamUpdate,DbUtil.insertSQL(data));
 

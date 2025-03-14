@@ -9,7 +9,6 @@ application.pid
 # *.jar
 *.war
 *.ear
-*.bak
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
@@ -25,11 +24,12 @@ classes
 doc1
 doc2
 doc3
+*.zip
+*.rar
+*bak
 log
 logs
 target
-*.zip
-*.rar
 
 # Idea
 .idea

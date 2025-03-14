@@ -37,7 +37,7 @@
         </dependency>-->
         <dependency>
             <groupId>io.github.wujun728</groupId>
-            <artifactId>jun-db-activerecord</artifactId>
+            <artifactId>jun-api-engine</artifactId>
             <version>1.0.22</version>
         </dependency>
         <!--<dependency>
@@ -262,7 +262,7 @@
 	                <type>pom</type>
 	                <scope>import</scope>
 	            </dependency>
-            <dependency>
+            <!--<dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>Hoxton.SR9</version>
@@ -276,7 +276,7 @@
                 <version>2.2.6.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
+            </dependency>-->
         </dependencies>
     </dependencyManagement>
 
