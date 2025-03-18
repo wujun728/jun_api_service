@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html >
+<head>
+	<meta charset="utf-8">
+    <title>接口文档</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="../../../style/plugins/layui-v2.5.5/layui/css/main/layui.css" media="all" />
+	<link rel="stylesheet" href="../../../style/css/main/global.css" media="all">
+	<link rel="stylesheet" href="../../../style/css/table.css" />
+	<link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	 <style>
+		 @media (max-width: 767px) { body { padding: 15px; } }
+		 body { box-sizing: border-box;
+		        min-width: 200px;
+		        max-width: 1000px;
+		        margin: 0 auto;
+		        padding: 30px 45px; 
+				}
+		*{
+			magin:0 auto;
+			padding:0px;
+		}
+		
+		.markdown-body table tr th, .markdown-body table tr td{
+			border: 1px solid #CCC;
+			padding: 8px 10px;
+			border-bottom: none;
+			border-right: none;
+		}
+		.markdown-body table tr th{
+			font-size: 14px;
+		}
+		.markdown-body table tr td{
+			font-size: 14px;
+		}
+		.markdown-body table tr th:last-child{
+			border-right: 1px solid #CCC;
+		}
+		.markdown-body table tr td:last-child{
+			border-right: 1px solid #CCC;
+		}
+		.markdown-body table{
+			border-bottom: 1px solid #CCC;
+			border-spacing: 0px;
+			width: 100%;
+		}
+		
+		.markdown-body pre {
+		    position: relative;
+		    background-color: #384548;
+		    color: #d1d2d2;
+		    padding: 1em;
+		    border-radius: 5px;
+		}
+		
+		.markdown-body p code {
+		    color: var(--bg-color);
+			background-color: #f9f9f9;
+			border: 1px solid #DDD;
+			padding: 5px 10px;
+			border-radius: 2px;
+			font-weight:bold;
+			font-size:14px;
+			cursor: pointer;
+		}
+		.markdown-body pre code {
+		    color: #d19a66;
+			text-wrap:wrap;
+			height: 20px;
+			line-height: 20px;
+		}
+		.markdown-body table thead tr {
+		    background-color: rgba(64, 158, 255, .1);
+		}
+		.markdown-body p{
+			font-size:16px;
+			padding:15px 0px;
+		}
+		.markdown-body p:nth-child(3) code{
+			background-color: f9f9f9;
+			color: var(--bg-color);
+		}
+		.markdown-body h2{
+			line-height: 60px;
+			font-size:24px;
+			border-bottom:1px solid #DDD;
+			margin-bottom:20px;
+		}
+		
+		.markdown-body pre::before {
+		    content: "";
+		    display: block;
+			background: url(../../../style/images/point.png);
+		    height: 32px;
+		    width: 100%;
+		    background-size: 40px;
+		    background-repeat: no-repeat;
+		    background-color: #384548;
+		    margin-bottom: 0;
+		    border-top-left-radius: 5px;
+		    border-top-right-radius: 5px;
+		    background-position: 0 10px;
+		}
+		
+		.btn-pre-copy{
+			position: absolute;
+			right: 10px;
+			top:0px;
+			font-size: 12px;
+			display: none;
+			height: 30px;
+			line-height: 30px;
+			cursor: pointer;
+		}
+		.markdown-body pre:hover .btn-pre-copy{
+			display: inline-block;
+		}
+	 </style>
+</head>
+<body>
+	<form class="layui-form" style="position: absolute;right: 30px;">
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<a href="javascript:;" class="layui-btn layui-btn-small" id="copyBtn">
+					<i class="layui-icon">&#xe630;</i> 复制文档地址
+				</a>
+				<a href="javascript:;" class="layui-btn layui-btn-small" id="runBtn">
+					<i class="layui-icon">&#xe609;</i> 运行
+				</a>
+				<a href="javascript:;" class="layui-btn layui-btn-small" style="display: none;" id="editBtn">
+					<i class="layui-icon">&#xe642;</i> 编辑API
+				</a>
+				<a href="javascript:;" class="layui-btn layui-btn-danger layui-btn-small" style="display: none;" id="delBtn">
+					<i class="layui-icon">&#xe640;</i> 删除API
+				</a>
+				<button type="button" class="layui-btn  layui-btn-small layui-btn-primary" style="display: none;" id="cancerBtn">
+					<i class="fa fa-mail-reply"></i> 
+					返回</button>
+			</div>
+		</div>
+	</form>
+	<div id="content" class="markdown-body"></div>
+	<script type="text/javascript" src="../../../style/plugins/layui-v2.5.5/layui/layui.js"></script>
+	<script type="text/javascript" src="../../../style/js/validator.js"></script>
+	<script type="text/javascript" src="../../../style/plugins/markdown/marked.min.js"></script>
+	<script type="text/javascript" src="../../../style/js/base.js"></script>
+	<script type="text/javascript" src="../../../style/js/api.js"></script>
+	<script>
+		
+		layui.use([ 'form','layer','tree'], function() {
+			var tree = layui.tree,
+			layer = layui.layer, 
+			$ = layui.jquery;
+		
+			var apiId = getUrlParam("apiId");
+			var type = getUrlParam("type");
+			var ref = getUrlParam("ref");
+			if(type != 'share'){
+				$("#editBtn").show();
+				$("#delBtn").show();
+				if(ref == 'api'){
+					$("#cancerBtn").show();
+				}
+			}
+			
+			$.ajax({
+			  url: '../../../style/plugins/markdown/template.md',
+			  dataType: 'text',
+			  success: function(data) {
+				  getApiInfo(data);
+			  }
+			});
+			var paramType = "";
+			var opType = "";
+			var sourceId = "";
+			var sourceName = "";
+			var database = "";
+			function getApiInfo(content){
+				ajaxRequest($, request.urls.apiInfoDetail, apiId, {}, function(res){
+						if(res.code == 200){
+							if(!res.data || !res.data.apiName){
+								layer.msg("未查到API信息",{icon:0});
+								return;
+							}
+							var data = res.data;
+							paramType = data.paramType;
+							sourceId = data.sourceId?data.sourceId:'';
+							sourceName = data.sourceName;
+							database = data.databaseName;
+							opType = data.opType;
+							
+							var path = serverUrl+"/lowcode/api/"+data.apiPath;
+							content = content.replace('${api_title}',data.apiName)
+							.replace('${api_title}',data.apiName)
+							.replace('${api_path}', path)
+							.replace('${api_remark}',data.remark)
+							.replace('${api_sql}',data.sql)
+							.replace('${api_type}', data.apiType);
+							
+							var demo ='';
+							var text ='';
+							if(data.params){
+								var params = JSON.parse(data.params);
+								if(params && params.length>0){
+									var demoData = '{';
+									text = '| 参数名称 | 参数说明 | 请求类型 | 是否必须 | 数据类型 |\r\n';
+									text +=    '|------------|-------------|------------|-----------|------------|\r\n';
+									$.each(params, function(i, param){
+										if(param.paramVos && param.paramVos.length>0){
+											$.each(param.paramVos, function(index,item){
+												text+='| '+item.attrName+' | '+(item.columnComment?item.columnComment:'')+' |  '+(data.apiType=='GET'?'query':'body')+'  |  否   |  '+(item.attrType?getAttrType(item.attrType):'')+'  |\r\n';
+												var val = (item.attrType == "Integer" || item.attrType == "Long")?0:"\"\"";
+												demoData+='\r\n\t"'+item.attrName+'": '+val+','
+											});
+										}
+									});
+									demoData = demoData.substring(0,demoData.length-1);
+									demoData+='\r\n}'
+									demo = '**请求示例**:\r\n `````` \r\n'+demoData+'\r\n `````` \r\n';
+									
+									if(data.apiType=='GET'){
+										demo = '';
+									}
+								}
+							}
+							content = content.replace('${paramsDemo}', demo);
+							content = content.replace('${api_params}', text);
+							
+							var html = marked.parse(content);
+							$("#content").html(html);
+							showApiTypeSyle(data.apiType);
+						}
+				});
+			}
+			
+			function getAttrType(attrType){
+				if("Integer" == attrType){
+					return "integer(int32)"
+				}else if("Long" == attrType){
+					return "integer(int64)"
+				}else if("Double" == attrType){
+					return "number(double)"
+				}else if("Float" == attrType){
+					return "number(float)"
+				}else if("Boolean" == attrType){
+					return "boolean"
+				}else if("String" == attrType){
+					return "string"
+				}
+				return 'string';
+			}
+			
+			function showApiTypeSyle(apiType){
+				if("GET" == apiType){
+					$(".markdown-body p:nth-child(3) code").css("background-color","#61affe");
+					$(".markdown-body p:nth-child(3) code").css("color","#ffffff");
+					$(".markdown-body p:nth-child(3) code").css("border","1px solid #61affe");
+				}else if("POST" == apiType){
+					$(".markdown-body p:nth-child(3) code").css("background-color","#49cc90");
+					$(".markdown-body p:nth-child(3) code").css("color","#ffffff");
+					$(".markdown-body p:nth-child(3) code").css("border","1px solid #49cc90");
+				}else if("PUT" == apiType){
+					$(".markdown-body p:nth-child(3) code").css("background-color","#fca130");
+					$(".markdown-body p:nth-child(3) code").css("color","#ffffff");
+					$(".markdown-body p:nth-child(3) code").css("border","1px solid #fca130");
+				}else if("DELETE" == apiType){
+					$(".markdown-body p:nth-child(3) code").css("background-color","#f93e3e");
+					$(".markdown-body p:nth-child(3) code").css("color","#ffffff");
+					$(".markdown-body p:nth-child(3) code").css("border","1px solid #f93e3e");
+				}
+			}
+			
+			$(document).on("click",".markdown-body p code",function(){
+				copyText($, this.innerHTML, function(){
+					layer.msg("已复制到剪切板");
+				})
+			});
+			
+			
+			$(document).ready(function() {
+				setTimeout(function(){
+					var pres = $(".markdown-body").find("pre");
+					for(var i=0;i<pres.length;i++){
+						var html = $(pres[i]).html();
+						var click = '<span class="btn-pre-copy">复制</span>';
+						$(pres[i]).html(click+html);
+					}
+				},1000);
+				
+			});
+			
+			
+			$(document).on("click",".markdown-body pre .btn-pre-copy",function(){
+				var text = $(this).parent().find("code").html();
+				var _that = this;
+				copyText($, text, function(){
+					layer.msg("已复制到剪切板");
+					$(_that).html("复制成功");
+					setTimeout(function(){
+						$(_that).html("复制");
+					},1000);
+				})
+			});
+			
+		
+			
+			$('#delBtn').on('click', function() {
+				layer.confirm("确认删除该API吗？",{icon:3, title:'提示信息'},function(index){
+					layer.close(index);
+					var load = layer.load(2);
+					ajaxRequest($, request.urls.apiInfoDel, apiId, {}, function(res){
+				    		if(res.code == 200){
+								layer.msg(res.message,{icon:1, time:500},function(){
+									window.parent.location.reload();
+								});
+								
+							}
+				    		layer.close(load);
+				    });
+				});
+			});
+			
+			$('#editBtn').on('click', function() {
+				if(paramType == "sql"){
+					layer.open({
+						type:2,
+						title:'编辑API',
+						area: ['800px', '600px'],
+						content:"apiSQLEdit.html?apiId="+apiId
+					});
+				}else if(paramType == "auto"){
+					if(opType == 'SELECT' || opType == 'SELECT_ONE'){
+						location.href= "apiAutoEdit.html?apiId="+apiId+"&sourceId="+sourceId +"&sourceName="+sourceName +"&database="+database;
+					}else{
+						layer.open({
+							type:2,
+							title:'编辑API',
+							area: ['800px', '600px'],
+							content:"apiEdit.html?apiId="+apiId
+						});
+					}
+				}else {
+					location.href= "apiAutoEdit.html?apiId="+apiId+"&sourceId="+sourceId +"&sourceName="+sourceName +"&database="+database;
+				}
+			});
+			
+			$('#cancerBtn').on('click',function(){
+				history.go(-1);
+			});
+			
+			$('#copyBtn').on('click',function(){
+				var content = location.href;
+				if(content.indexOf("share")==-1){
+					content = content+"&type=share";
+				}
+				copyText($, content, function(){
+					layer.msg("已复制到剪切板");
+				})
+			});
+			
+			$('#runBtn').on('click',function(){
+				if(type != 'share'){
+					var href = parent.location.href;
+					if(href.indexOf("apiRunDoc")!=-1){
+						location.href = "apiRun.html?apiId="+apiId+"&type="+type;
+					}else{
+						window.open("apiRunDoc.html?apiId="+apiId);
+					}
+				}else{
+					if(window.parent.setiFrame){
+						window.parent.setiFrame("apiRun.html?apiId="+apiId+"&type="+type);
+					}else{
+						location.href = "apiRun.html?apiId="+apiId+"&type="+type;
+					}
+				}
+				//window.parent.setiFrame("apiRun.html?apiId="+apiId);
+				// location.href = "apiRun.html?apiId="+apiId;
+			});
+		});
+		
+		
+		function reloadParent(){
+			window.parent.location.reload();
+		}
+		
+		
+	</script>
+</body>
+</html>

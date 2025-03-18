@@ -1,0 +1,81 @@
+*{
+	margin: auto;
+	padding: 0px;
+	font-family: "微软雅黑";
+}
+body{
+	margin: auto;
+	padding: 0px;
+}
+
+.message_container{
+	height: 350px;
+	overflow: auto;
+	margin-top: 10px;
+	padding: 0px 10px 0px 10px;
+}
+#window-btn{
+	display: none;
+}
+#exit-btn{
+	display: none;
+}
+#message .textArea_imgs{
+	cursor: pointer;
+}
+
+.container{
+	width: 900px;
+	border: 1px solid #CCC;
+	padding: 10px;
+	margin: 40px auto;
+}
+.top_contain{
+	width: 100%;
+	display: inline-block;
+}
+.bottom{
+	margin: 10px 10px;
+}
+
+.textarea{
+	width: 97%;
+	height: 100px;
+	outline: none;
+	padding-left: 5px;
+	padding-top: 5px;
+	resize:none;
+	margin: 10px 0px 10px 10px;
+	font-size: 15px;
+	border: 1px solid #CCC;
+	overflow: auto;
+}
+.msg_span{
+	height: 25px;
+	line-height: 25px;
+	font-size: 14px;
+	margin-bottom: 10px;
+	margin-left: 10px;
+}
+.msg_span a{
+	color: #333;
+	margin-right: 10px;
+	text-decoration: none;
+}
+
+.btn{
+	width: 100px;
+	height: 34px;
+	font-weight: bold;
+	border: none;
+	border-radius:3px;
+	background: #36C;
+	color: #FFF;
+	outline: none;
+	cursor: pointer;  
+	float: right;
+	margin-right: 5px;
+}
+.btn:hover{
+	background: #36F;
+}

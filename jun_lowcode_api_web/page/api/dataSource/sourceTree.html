@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>数据源</title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+
+<link rel="stylesheet"
+	href="../../../style/plugins/layui-v2.5.5/layui/css/main/layui.css"
+	media="all" />
+<link rel="stylesheet" href="../../../style/css/main/global.css" media="all">
+<link rel="stylesheet" href="../../../style/css/table.css" />
+<link rel="stylesheet" type="text/css"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<style type="text/css">
+		.admin-main{
+			height:500px; 
+		}
+		.main-contain{
+			width: 100%;
+			height: 100%;
+		}
+		.main-contain .main-left{
+			width: 22%;
+			height: 100%;
+			float: left;
+			border: 1px solid #CCC;
+			border-right: none;
+		}
+		.main-contain .main-right{
+			float: left;
+			width: 77%;
+			height: 100%;
+		}
+		.tree-content{
+			overflow: auto;
+			height: 80%;
+		}
+		.frame{
+			width: 100%;
+			height: 100%;
+			border: 1px solid #CCC;
+		}
+		.loading{
+			width:100%;
+			display: inline-block;
+   			text-align: center;
+   			line-height: 100px;
+		}
+		.loading .layui-icon{
+			display: inline-block;
+   			font-size: 36px;
+		}
+		.layui-btn{
+			margin-bottom: 5px;
+			margin-left:0px !important;
+			margin-right: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div class="admin-main">
+		<div class="main-contain">
+			<div class="main-left">
+				<blockquote class="layui-elem-quote">
+					<!-- <a href="javascript:;" class="layui-btn layui-btn-small" id="freshBtn">
+						<i class="layui-icon">&#xe666;</i> 刷新
+					</a> -->
+					<a href="javascript:;" class="layui-btn layui-btn-small" id="addBtn">
+						<i class="layui-icon">&#xe608;</i> 新增数据源
+					</a>
+					<!-- <a href="javascript:;" class="layui-btn layui-btn-small" id="findBtn">
+						<i class="layui-icon">&#xe615;</i> 查看API
+					</a> -->
+					<a href="javascript:;" class="layui-btn layui-btn-small" id="manageBtn">
+						<i class="layui-icon">&#xe60a;</i> 数据源管理
+					</a>
+				</blockquote>
+				
+				<div id="tree" class="tree-content">
+				</div>
+			</div>
+			<div class="main-right">
+				<iframe src="" class="frame" id="tableFrame"></iframe>
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/javascript"
+		src="../../../style/plugins/layui-v2.5.5/layui/layui.js"></script>
+	<script type="text/javascript" src="../../../style/js/base.js"></script>
+	<script type="text/javascript" src="../../../style/js/api.js"></script>
+	<script>
+		layui.use(['form','layer','table', 'tree', 'layer' ], function() {
+			var tree = layui.tree,
+			layer = layui.layer, 
+			$ = layui.jquery;
+			
+			var treeData = [];
+			
+			function reloadTree(){
+				$('#tree').html('');
+				treeData = [];
+				ajaxRequest($, request.urls.dataSourceList,'',{}, function(res){
+						if(res.code == 200){
+							var data = res.data.records;
+							if(data && data.length>0){
+								$.each(data,function(index,item){
+									var obj ={
+										id:item.sourceId,
+										label:item.sourceName,
+										type:'datasource'
+									};
+									treeData.push(obj);
+								})
+							}
+							treeLoad(treeData);
+						}
+				});
+			}
+			
+			reloadTree();
+			
+			function treeLoad(data){
+				tree.render({
+					elem : '#tree',
+					data : data,
+					id : 'treeId',
+					showLine:false,
+					onlyIconControl:true,
+					click : function(obj) {
+						showDatabase(obj.data);
+					}
+				});
+			}
+			
+			function showDatabase(treeItem){
+				if(treeItem.type == 'datasource'){
+					var sourceId = treeItem.id;
+					var label = treeItem.label;
+					var params ={sourceId:sourceId};
+					if(label == '默认数据源'){
+						params = {};
+					}
+					ajaxRequest($, request.urls.databaseList,'',params, function(res){
+						if(res.code == 200 && res.data && res.data.length>0){
+							$.each(treeData,function(index,item){
+								if(item.id == sourceId){
+									item.children = [];
+									item.spread = true;
+									$.each(res.data,function(index2,item2){
+										var obj ={
+											id: index2,
+											label: item2,
+											type:'database',
+											sourceId: item.id,
+											sourceName:item.label
+										};
+										item.children.push(obj);
+									});
+									
+								}else{
+									item.spread = false;
+								}
+							})
+							treeLoad(treeData);
+						}else{
+							setTimeout(function(){
+								//进入编辑操作
+								layer.open({
+									type:2,
+									title:'编辑数据源',
+									area: ['520px', '460px'],
+									content:'sourceEdit.html?sourceId='+sourceId
+								});
+							},1000)
+							
+						}
+					});
+				}else if(treeItem.type == 'database'){
+					var database = treeItem.label;
+					var sourceId = treeItem.sourceId;
+					var sourceName = treeItem.sourceName;
+					$("#tableFrame").attr("src","tableList.html?sourceId="+sourceId +"&sourceName="+sourceName +"&database="+database);
+					
+					ajaxRequest($, request.urls.dbTableList,'',{sourceId: sourceId,database:database}, function(res){
+						if(res.code == 200 && res.data && res.data.length>0){
+							$.each(treeData,function(index,item){
+								if(item.children && item.id == sourceId ){
+									$.each(item.children,function(index2,item2){
+										if(item2.label == database){
+											item2.children = [];
+											item2.spread = true;
+											$.each(res.data,function(index3,item3){
+												var obj ={
+													id: index3,
+													label: item3.tableName,
+													type:'table',
+													sourceName:sourceName,
+													sourceId: sourceId,
+													database:item2.label
+												};
+												item2.children.push(obj);
+											});
+										}else{
+											item2.spread = false;
+										}
+									});
+								}else{
+									item.spread = false;
+								}
+							})
+							treeLoad(treeData);
+						}
+					});
+					
+				}else{
+					var sourceId = treeItem.sourceId;
+					var sourceName = treeItem.sourceName;
+					var database = treeItem.database;
+					var tableName = treeItem.label;
+					$("#tableFrame").attr("src","query.html?sourceId="+sourceId +"&sourceName="+sourceName +"&database="+database+"&tableName="+tableName);
+				}
+			}
+			
+			
+			$(window).on('resize', function() {
+				var $content = $('.admin-main');
+				$content.height($(this).height()-30);
+				$content.find('iframe').each(function() {
+					$(this).height($content.height());
+					$(".tree-content").height($content.height()-80);
+				});
+			}).resize();
+			
+			$('#freshBtn').on('click', function() {
+				reloadTree();
+			});
+			
+			$('#addBtn').on('click', function() {
+				layer.open({
+					type:2,
+					title:'新增数据源',
+					area: ['520px', '460px'],
+					content:'sourceAdd.html'
+				});
+			});
+			
+			$('#findBtn').on('click', function() {
+				location.href="../apiInfo/apiDoc.html?ref=source";
+			});
+			
+			$('#manageBtn').on('click', function() {
+				location.href="sourceList.html";
+			});
+		});
+		
+	</script>
+</body>
+
+</html>

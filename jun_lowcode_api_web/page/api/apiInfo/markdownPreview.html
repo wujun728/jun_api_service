@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html >
+<head>
+	<meta charset="utf-8">
+    <title>markdown文档预览</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="../../../style/plugins/layui-v2.5.5/layui/css/main/layui.css" media="all" />
+	<link rel="stylesheet" href="../../../style/css/main/global.css" media="all">
+	<link rel="stylesheet" href="../../../style/css/table.css" />
+	<link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	 <style>
+		 @media (max-width: 767px) { body { padding: 15px; } }
+		 body { box-sizing: border-box;
+		        min-width: 200px;
+		        max-width: 1000px;
+		        margin: 0 auto;
+		        padding: 30px 45px; 
+				}
+		*{
+			magin:0 auto;
+			padding:0px;
+		}
+		
+		.markdown-body table tr th, .markdown-body table tr td{
+			border: 1px solid #CCC;
+			padding: 8px 10px;
+			border-bottom: none;
+			border-right: none;
+		}
+		.markdown-body table tr th{
+			font-size: 14px;
+		}
+		.markdown-body table tr td{
+			font-size: 14px;
+		}
+		.markdown-body table tr th:last-child{
+			border-right: 1px solid #CCC;
+		}
+		.markdown-body table tr td:last-child{
+			border-right: 1px solid #CCC;
+		}
+		.markdown-body table{
+			border-bottom: 1px solid #CCC;
+			border-spacing: 0px;
+			width: 100%;
+		}
+		
+		.markdown-body pre {
+		    position: relative;
+		    background-color: #384548;
+		    color: #d1d2d2;
+		    padding: 1em;
+		    border-radius: 5px;
+		}
+		
+		.markdown-body p code {
+		    color: var(--bg-color);
+			background-color: #f9f9f9;
+			border: 1px solid #DDD;
+			padding: 5px 10px;
+			border-radius: 2px;
+			font-weight:bold;
+			font-size:14px;
+			cursor: pointer;
+		}
+		.markdown-body pre code {
+		    color: #d19a66;
+			text-wrap:wrap;
+			height: 20px;
+			line-height: 20px;
+		}
+		.markdown-body table thead tr {
+		    background-color: rgba(64, 158, 255, .1);
+		}
+		.markdown-body p{
+			font-size:16px;
+			padding:15px 0px;
+		}
+		.markdown-body p:nth-child(3) code{
+			background-color: f9f9f9;
+			color: var(--bg-color);
+		}
+		.markdown-body h2{
+			line-height: 60px;
+			font-size:24px;
+			border-bottom:1px solid #DDD;
+			margin-bottom:20px;
+		}
+		
+		.markdown-body pre::before {
+		    content: "";
+		    display: block;
+			background: url(../../../style/images/point.png);
+		    height: 32px;
+		    width: 100%;
+		    background-size: 40px;
+		    background-repeat: no-repeat;
+		    background-color: #384548;
+		    margin-bottom: 0;
+		    border-top-left-radius: 5px;
+		    border-top-right-radius: 5px;
+		    background-position: 0 10px;
+		}
+		
+		.btn-pre-copy{
+			position: absolute;
+			right: 10px;
+			top:0px;
+			font-size: 12px;
+			display: none;
+			height: 30px;
+			line-height: 30px;
+			cursor: pointer;
+		}
+		.markdown-body pre:hover .btn-pre-copy{
+			display: inline-block;
+		}
+	 </style>
+</head>
+<body>
+	<div id="content" class="markdown-body"></div>
+	<script type="text/javascript" src="../../../style/plugins/layui-v2.5.5/layui/layui.js"></script>
+	<script type="text/javascript" src="../../../style/js/validator.js"></script>
+	<script type="text/javascript" src="../../../style/plugins/markdown/marked.min.js"></script>
+	<script type="text/javascript" src="../../../style/js/base.js"></script>
+	<script type="text/javascript" src="../../../style/js/api.js"></script>
+	<script>
+		
+		layui.use([ 'form','layer','tree', 'layer' ], function() {
+			var tree = layui.tree,
+			layer = layui.layer, 
+			$ = layui.jquery;
+			var mkfile = getUrlParam("f");
+			mkfile = mkfile?mkfile:'test';
+			$.ajax({
+			  url: '../../../style/plugins/markdown/'+mkfile+'.md',
+			  dataType: 'text',
+			  success: function(data) {
+				  console.log(data);
+				  var html = marked.parse(data);
+				  $("#content").html(html);
+				  var type = $("code").eq(0).html();
+				  showApiTypeSyle(type);
+			  }
+			});
+			
+			function showApiTypeSyle(apiType){
+				if("GET" == apiType){
+					$(".markdown-body p:nth-child(3) code").css("background-color","#61affe");
+					$(".markdown-body p:nth-child(3) code").css("color","#ffffff");
+					$(".markdown-body p:nth-child(3) code").css("border","1px solid #61affe");
+				}else if("POST" == apiType){
+					$(".markdown-body p:nth-child(3) code").css("background-color","#49cc90");
+					$(".markdown-body p:nth-child(3) code").css("color","#ffffff");
+					$(".markdown-body p:nth-child(3) code").css("border","1px solid #49cc90");
+				}else if("PUT" == apiType){
+					$(".markdown-body p:nth-child(3) code").css("background-color","#fca130");
+					$(".markdown-body p:nth-child(3) code").css("color","#ffffff");
+					$(".markdown-body p:nth-child(3) code").css("border","1px solid #fca130");
+				}else if("DELETE" == apiType){
+					$(".markdown-body p:nth-child(3) code").css("background-color","#f93e3e");
+					$(".markdown-body p:nth-child(3) code").css("color","#ffffff");
+					$(".markdown-body p:nth-child(3) code").css("border","1px solid #f93e3e");
+				}
+			}
+			
+			$(document).on("click",".markdown-body p code",function(){
+				copyText($, this.innerHTML, function(){
+					layer.msg("已复制到剪切板");
+				})
+			});
+			
+			
+			$(document).ready(function() {
+				setTimeout(function(){
+					var pres = $(".markdown-body").find("pre");
+					for(var i=0;i<pres.length;i++){
+						var html = $(pres[i]).html();
+						var click = '<span class="btn-pre-copy">复制</span>';
+						$(pres[i]).html(click+html);
+					}
+				},1000);
+				
+			});
+			
+			
+			$(document).on("click",".markdown-body pre .btn-pre-copy",function(){
+				var text = $(this).parent().find("code").html();
+				var _that = this;
+				copyText($, text, function(){
+					layer.msg("已复制到剪切板");
+					$(_that).html("复制成功");
+					setTimeout(function(){
+						$(_that).html("复制");
+					},1000);
+				})
+			});
+			
+		});
+		
+	</script>
+</body>
+</html>

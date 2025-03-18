@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>分页</title>
+	<link rel="stylesheet" type="text/css" href="css/pageGuide.css">
+	<style type="text/css">
+		table{
+			width:100%;
+			text-align: center;
+		}
+		table tr{
+			height: 40px;
+			line-height: 40px;
+
+		}
+	</style>
+</head>
+<body>
+	<table>
+		<thead>
+			<tr>
+				<th>订单时间</th>				
+				<th>已发布数</th>
+				<th>确认转运数</th>
+				<th>完成转运数</th>
+				<th>异常数</th>
+				<th>转运支出运费(元)</th>
+				<th>转运冻结运费(元)</th>
+				<th>违约金冻结费用(元)</th>
+			</tr>
+		</thead>
+		<tbody id="tbody">
+			
+		</tbody>
+	</table>
+	<div id="pageList" style="text-align: center;margin-top: 40px;" class="pageList"></div>
+	
+	
+	<table>
+		<thead>
+			<tr>
+				<th>订单时间</th>				
+				<th>已发布数</th>
+				<th>确认转运数</th>
+				<th>完成转运数</th>
+				<th>异常数</th>
+				<th>转运支出运费(元)</th>
+				<th>转运冻结运费(元)</th>
+				<th>违约金冻结费用(元)</th>
+			</tr>
+		</thead>
+		<tbody id="tbody2">
+			
+		</tbody>
+	</table>
+	
+	<div id="pageList2" style="text-align: center;margin-top: 40px;" class="pageList"></div>
+	
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/data.js"></script>
+	<script type="text/javascript" src="js/pageGuide.js"></script>
+	<script type="text/javascript">
+		
+		function showpage(pageIndex,pageSize){
+			var total=resData.result.length;
+			var totalPage=Math.ceil(total/pageSize);
+			var index=(pageIndex-1)*pageSize;
+			var res=resData.result;
+			var size=pageSize;
+			if(pageIndex==totalPage){
+				size=total%pageSize;
+				if(size==0){
+					size=pageSize;
+				}
+			}
+			var html="";
+			for (var i = 0; i < size; i++) {
+				if(res[index+i]){
+					html+="<tr>"+
+					"<td>"+res[index+i].orderTime+"</td>"+
+					"<td>"+res[index+i].releaseCount+"</td>"+
+					"<td>"+res[index+i].confirmTransportCount+"</td>"+
+					"<td>"+res[index+i].completeCount+"</td>"+
+					"<td>"+res[index+i].exceptionCount+"</td>"+
+					"<td>"+res[index+i].expenditureFreight+"</td>"+
+					"<td>"+res[index+i].frozenFreight+"</td>"+
+					"<td>"+res[index+i].breakAmount+"</td>"+
+					"</tr>";
+				}
+			}
+			$("#tbody").html(html);
+			$("#pageList").pageGuide({
+				pageIndex:pageIndex, //不可省略
+				pageSize:pageSize, //不可省略
+				sumPage:totalPage, //不可省略
+				selectPage:[5,10,15,20], //可省略 默认 [10,20,50,100]
+				onePageFlag:true, //可省略,默认 false 只有一页数据时不显示，true则显示
+				style:{ //可省略
+					background:'#1fb5ac',
+					color:'#1fb5ac'
+				},
+				jump:function(obj){  //不可省略
+					showpage(obj.curr,obj.pageSize);
+				}
+			});
+		}
+		showpage(1,5);
+		
+		function showpage2(pageIndex,pageSize){
+			var total=resData.result.length;
+			var totalPage=Math.ceil(total/pageSize);
+			var index=(pageIndex-1)*pageSize;
+			var res=resData.result;
+			var size=pageSize;
+			if(pageIndex==totalPage){
+				size=total%pageSize;
+				if(size==0){
+					size=pageSize;
+				}
+			}
+			var html="";
+			for (var i = 0; i < size; i++) {
+				if(res[index+i]){
+					html+="<tr>"+
+					"<td>"+res[index+i].orderTime+"</td>"+
+					"<td>"+res[index+i].releaseCount+"</td>"+
+					"<td>"+res[index+i].confirmTransportCount+"</td>"+
+					"<td>"+res[index+i].completeCount+"</td>"+
+					"<td>"+res[index+i].exceptionCount+"</td>"+
+					"<td>"+res[index+i].expenditureFreight+"</td>"+
+					"<td>"+res[index+i].frozenFreight+"</td>"+
+					"<td>"+res[index+i].breakAmount+"</td>"+
+					"</tr>";
+				}
+			}
+			$("#tbody2").html(html);
+			
+			$("#pageList2").pageGuide({
+				pageIndex:pageIndex, //不可省略
+				pageSize:pageSize, //不可省略
+				sumPage:totalPage, //不可省略
+				selectPage:[1,2,3,4], //可省略 默认 [10,20,50,100]
+				onePageFlag:true, //可省略,默认 false 只有一页数据时不显示，true则显示
+				language:"en-US", //支持中英文en-US,zh-CN
+				//style:{ //可省略
+					//background:'red',
+					//color:'red'
+				//},
+				jump:function(obj){  //不可省略
+					showpage2(obj.curr,obj.pageSize);
+				}
+			});	
+		}
+		showpage2(1,4);
+	</script>
+</body>
+</html>

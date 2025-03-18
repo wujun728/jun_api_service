@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>接口文档</title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+
+<link rel="stylesheet"
+	href="../../../style/plugins/layui-v2.5.5/layui/css/main/layui.css"
+	media="all" />
+<link rel="stylesheet" href="../../../style/css/main/global.css" media="all">
+<link rel="stylesheet" href="../../../style/css/table.css" />
+<link rel="stylesheet" type="text/css"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<style type="text/css">
+		.admin-main{
+			height:500px; 
+		}
+		.main-contain{
+			width: 100%;
+			height: 100%;
+		}
+		.main-contain .main-left{
+			width: 22%;
+			height: 100%;
+			float: left;
+			border: 1px solid #CCC;
+			border-right: none;
+		}
+		.main-contain .main-right{
+			float: left;
+			width: 77%;
+			height: 100%;
+		}
+		.tree-content{
+			overflow: auto;
+			height: 80%;
+		}
+		.frame{
+			width: 100%;
+			height: 100%;
+			border: 1px solid #CCC;
+		}
+		.loading{
+			width:100%;
+			display: inline-block;
+   			text-align: center;
+   			line-height: 100px;
+		}
+		.loading .layui-icon{
+			display: inline-block;
+   			font-size: 36px;
+		}
+		.btn-GET{
+			background: #61affe !important;
+		}
+		.btn-POST{
+			background: #49cc90 !important;
+		}
+		.btn-PUT{
+			background: #fca130 !important;
+		}
+		.btn-DELETE{
+			background: #f93e3e !important;
+		}
+	</style>
+</head>
+<body>
+	<div class="admin-main">
+		<div class="main-contain">
+			<div class="main-left">
+				<!-- <blockquote class="layui-elem-quote">
+					<a href="javascript:;" class="layui-btn layui-btn-small" id="freshBtn">
+						<i class="layui-icon">&#xe666;</i> 刷新
+					</a>
+				</blockquote> -->
+				
+				<div id="tree" class="tree-content">
+				</div>
+			</div>
+			<div class="main-right">
+				<iframe src="" class="frame" id="tableFrame"></iframe>
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/javascript"
+		src="../../../style/plugins/layui-v2.5.5/layui/layui.js"></script>
+	<script type="text/javascript" src="../../../style/js/base.js"></script>
+	<script type="text/javascript" src="../../../style/js/api.js"></script>
+	<script>
+		layui.use([ 'form','layer','tree', 'layer' ], function() {
+			var tree = layui.tree,
+			layer = layui.layer, 
+			$ = layui.jquery;
+			
+			var treeData = [];
+			
+			var database = getUrlParam("database");
+			var sourceId = getUrlParam("sourceId");
+			var urlApiId = getUrlParam("apiId");
+			
+			function reloadTree(){
+				$('#tree').html('');
+				treeData = [];
+				ajaxRequest($, request.urls.apiInfoTrees,'',{databaseName:database,sourceId:sourceId}, function(res){
+						if(res.code == 200){
+							var data = res.data;
+							if(data && data.length>0){
+								$.each(data,function(index,item){
+									var obj ={
+										id:item.sourceId,
+										label:item.sourceName,
+										type:'datasource'
+									};
+									if(item.databases && item.databases.length>0){
+										obj.spread = true;
+										obj.children = [];
+										$.each(item.databases ,function(index2,item2){
+											var obj2 ={
+												id:index2,
+												label:item2.databaseName,
+												type:'database',
+											};
+											if(item2.groups && item2.groups.length>0){
+												obj2.spread = true;
+												obj2.children = [];
+												$.each(item2.groups ,function(index3,item3){
+													var obj3 ={
+														id: item3.apiId,
+														label: item3.groupName,
+														type:'group'
+													};
+													
+													if(item3.apis && item3.apis.length>0){
+														obj3.spread = true;
+														obj3.children = [];
+														$.each(item3.apis ,function(index4,item4){
+															var obj4 ={
+																id: item4.apiId,
+																label: showApiType(item4.apiType)+"&nbsp;&nbsp;"+item4.apiName,
+																type:'api'
+															};
+															obj3.children.push(obj4);
+														});
+													}
+													obj2.children.push(obj3);
+												});
+											}
+											obj.children.push(obj2);
+										});
+									}
+									treeData.push(obj);
+								})
+							}
+							treeLoad(treeData);
+						}
+				});
+			}
+			
+			reloadTree();
+			
+			function showApiType(apiType){
+				return '<a href="javascript:;" class="layui-btn layui-btn-mini btn-'+apiType+'">'+apiType+'</a>';
+			}
+			
+			function treeLoad(data){
+				tree.render({
+					elem : '#tree',
+					data : data,
+					id : 'treeId',
+					showLine:false,
+					onlyIconControl:false,
+					click : function(obj) {
+						if(obj.data.type == 'api'){
+							$("#tableFrame").attr("src","apiRun.html?apiId="+obj.data.id);
+							$("div.layui-tree-set").siblings().css("background","#ffffff");
+							$("div[data-id='"+obj.data.id+"']").css("background","#f0f0f0");
+						}
+					}
+				});
+				var id = '';
+				if(urlApiId){
+					id = urlApiId;
+					$("#tableFrame").attr("src","apiRun.html?apiId="+id);
+				}else{
+					if(data && data.length>0 && data[0].children){
+						id = data[0].children[0].children[0].children[0].id;
+						$("#tableFrame").attr("src","apiRun.html?apiId="+id);
+					}
+				}
+				$("div[data-id='"+id+"']").css("background","#f0f0f0");
+			}
+			
+			$(window).on('resize', function() {
+				var $content = $('.admin-main');
+				$content.height($(this).height()-30);
+				$content.find('iframe').each(function() {
+					$(this).height($content.height());
+					$(".tree-content").height($content.height());
+				});
+			}).resize();
+			
+			$('#freshBtn').on('click', function() {
+				reloadTree();
+			});
+			
+			$('#addBtn').on('click', function() {
+				layer.open({
+					type:2,
+					title:'创建API',
+					area: ['800px', '580px'],
+					content:"apiAdd.html"
+				});
+			});
+			
+			var ref = getUrlParam("ref");
+			if(ref && ref == "source"){
+				$("#resetBtn").show();
+			}
+			
+			$('#resetBtn').on('click', function() {
+				history.go(-1);
+			});
+			
+		});
+		
+	</script>
+</body>
+
+</html>

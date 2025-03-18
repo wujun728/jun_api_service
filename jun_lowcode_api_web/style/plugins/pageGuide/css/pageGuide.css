@@ -1,0 +1,81 @@
+.pageList{
+	height: 60px;
+	line-height: 60px;
+	font-size: 14px;
+	margin-top: 20px;
+}
+
+.pageList span{
+	padding: 6px 13px 6px 13px;
+	border-top: 1px solid #DDD;
+	border-bottom: 1px solid #DDD;
+	border-left: 1px solid #DDD;
+	color: #666;
+}
+.pageList span:first-child{
+	border-radius:2px 0px 0px 2px;
+}
+.pageList span:last-child{
+	border-right: 1px solid #DDD;
+	border-radius:0px 2px 2px 0px;
+}
+.pageList a{
+	padding: 6px 13px 6px 13px;
+	border-top: 1px solid #DDD;
+	border-bottom: 1px solid #DDD;
+	border-left: 1px solid #DDD;
+	color: #333;
+	text-decoration: none;
+}
+
+.pageList a:hover{
+	background: #F5F5F5;
+}
+
+.pageList a:last-child{
+	border-right: 1px solid #DDD !important;
+}
+.pageList .page-last{
+	border-right: 1px solid #DDD !important;
+}
+
+.pageList .page-curr{
+	font-style: normal;
+	background-color: #00a5e0;
+	color: #FFF;
+	border:1px solid #00a5e0;
+}
+
+.pageList .page_input{
+	width:40px;
+	height:28px;
+	margin-left:10px;
+	outline: none;
+	border: 1px solid #DDD;
+	padding-left:5px;
+	padding-right:5px;
+	color:#999;
+	font-size:14px;
+	border-radius:1px;
+}
+
+.pageList .page_select{
+	width:50px;
+	height:30px;
+	margin-left:4px;
+	outline: none;
+	border: 1px solid #DDD;
+	padding-left:5px;
+	padding-right:5px;
+	color:#999;
+	font-size:14px;
+	border-radius:1px;
+}
+.pageList em{
+	font-weight: normal;
+	margin-left:10px;
+	font-style: normal;
+}
+.pageList .second_em{
+	margin-left:5px !important;
+}

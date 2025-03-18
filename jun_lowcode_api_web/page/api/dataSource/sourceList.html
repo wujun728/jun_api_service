@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>数据源列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="stylesheet" href="../../../style/plugins/layui-v2.5.5/layui/css/main/layui.css" media="all" />
+    <link rel="stylesheet" href="../../../style/css/main/global.css" media="all">
+    <link rel="stylesheet" href="../../../style/css/table.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+	<div class="admin-main">
+		<blockquote class="layui-elem-quote">
+			<form class="layui-form">
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label">数据源名称</label>
+						<div class="layui-input-inline">
+							<input type="text" id="sourceName" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<a href="javascript:;" class="layui-btn layui-btn-small" id="searchBtn">
+							<i class="layui-icon">&#xe615;</i> 搜索
+						</a>
+						<a href="javascript:;" class="layui-btn layui-btn-small layui-btn-danger" id="resetBtn">
+							<i class="layui-icon">&#xe639;</i> 清除
+						</a>
+						<a href="javascript:;" class="layui-btn layui-btn-small" id="addBtn">
+							<i class="layui-icon">&#xe608;</i> 新增数据源
+						</a>
+						<a href="javascript:;" class="layui-btn layui-btn-danger layui-btn-small" id="delBtn">
+							<i class="layui-icon">&#xe640;</i> 删除数据源
+						</a>
+						<a href="javascript:;" onclick="window.history.go(-1)" class="layui-btn layui-btn-small layui-btn-primary">
+							<i class="fa fa-mail-reply"></i> 返回
+						</a>
+					</div>
+				</div>
+			</form>
+		</blockquote>
+		<fieldset class="layui-elem-field">
+			<legend>数据源列表</legend>
+			<div class="layui-field-box">
+				<table class="site-table table-hover" id="dataTable" lay-filter="dataTable">
+					
+				</table>
+			</div>
+		</fieldset>
+		<div class="admin-table-page">
+			<div id="page" class="page">
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="../../../style/plugins/layui-v2.5.5/layui/layui.js"></script>
+	<script type="text/javascript" src="../../../style/js/base.js"></script>
+	<script type="text/javascript" src="../../../style/js/api.js"></script>
+	<script>
+		layui.use(['laypage','layer','table','form'], function() {
+			var $ = layui.jquery,
+				laypage = layui.laypage,
+				layer = layui.layer;
+			var form = layui.form;
+			
+			var _pageSize = 10;
+			
+			var queryData={
+				pageIndex:1,
+				pageSize:_pageSize,
+				sortName:'',
+				sortOrder:'',
+				sourceNameLike:$("#sourceName").val()
+			};
+			
+			var table = layui.table;
+			var dataTable = table.render({
+				elem: '#dataTable'
+				,url: request.urls.dataSourceList.url
+				,where:queryData
+				,headers:{
+					Authorization:Authorization
+				}
+				,method:'GET'
+				,request: {
+					pageName: 'pageIndex' //页码的参数名称，默认：page
+					,limitName: 'pageSize' //每页数据量的参数名，默认：limit
+				}
+				,parseData: function(res){
+					return {
+						'code':(res.code==200?0:-1),
+						'msg': res.message,
+					    'count': res.data.total,
+					    'data': res.data.records
+					};
+				}
+				,autoSort:false
+				,cellMinWidth: 100 
+			    ,cols: [[
+			      {checkbox:true, width:'7%'}
+			      ,{field:'sourceName', title: '数据源名称',sort: true}
+			      ,{field:'dbType', title: '数据库类型',sort: true,}
+			      ,{field:'host', title: '主机', sort: true}
+				  ,{field:'port', title: '端口', sort: true}
+				  ,{field:'userName', title: '用户名', sort: true}
+				  ,{field:'createTime', title: '创建时间', sort: true}
+			      ,{title: '操作', width:'15%', templet:function(row){
+			      	var html ='';
+		      			html+='<a href="javascript:;" lay-event="edit" class="layui-btn layui-btn-mini">修改</a>';
+						html+= '<a href="javascript:;" lay-event="del" class="layui-btn layui-btn-danger layui-btn-mini">删除</a>';
+			      	return html;
+			      }}
+				]],
+				done: function(res, curr, count){
+					laypage.render({
+						elem: 'page',
+						count: count,
+						limit: queryData.pageSize,
+						curr: queryData.pageIndex,
+						groups:7,
+						layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],
+						limits: [10, 20, 30, 40, 50],
+						jump: function(obj, first) {
+							queryData.pageSize  =obj.limit;
+							var curr = obj.curr;
+							if(!first) {
+								reloadData(curr);
+							}
+						}
+					});
+				}
+			});
+			
+			function clearData(){
+				$("#sourceName").val("");
+				queryData.pageSize = _pageSize
+				form.render();
+			}
+			
+			function reloadData(pIndex,sortName,sortOrder){
+				queryData.pageIndex = pIndex?pIndex:1;
+				if(sortName){
+					queryData.sortName = sortName;
+				}
+				if(sortOrder){
+					queryData.sortOrder = sortOrder;
+				}
+				queryData.sourceNameLike=$("#sourceName").val();
+				
+				table.reload('dataTable', {
+				    where: queryData
+				});
+			}
+			
+			var sortNames={
+				'sourceName':'source_name',
+				'createTime':'create_time',
+				'dbType':'db_type',
+				'host':'host',
+				'port':'port'
+			};
+			
+			table.on('sort(dataTable)', function(obj){
+				reloadData(1, sortNames[obj.field]?sortNames[obj.field]:obj.field , obj.type);
+			});
+			
+			table.on('tool(dataTable)', function(obj){
+			  switch(obj.event){
+			    case 'edit':
+			      editSource(obj.data.sourceId);
+			    break;
+		      	case 'del':
+				  var sourceIds = [];
+				  sourceIds.push(obj.data.sourceId)
+			      delSource(sourceIds,"确认删除该数据源吗？");
+			    break;
+			  };
+			});
+			
+			$('#delBtn').on('click', function() {
+				var checkStatus = table.checkStatus('dataTable');
+				if(checkStatus.data.length==0){
+					layer.msg("请选择一行！",{icon:0});
+					return;
+				}
+				var sourceIds = [];
+				for(var i=0;i<checkStatus.data.length;i++){
+					sourceIds.push(checkStatus.data[i].sourceId);
+				}
+				delSource(sourceIds,"确认删除所选数据源吗？");
+			});
+			
+			function delSource(sourceIds,message){
+				layer.confirm(message,{icon:3,title:'提示信息'},function(index){
+					layer.close(index);
+					var load = layer.load(2);
+					ajaxRequest($, request.urls.dataSourceDel, '', sourceIds, function(res){
+						if(res.code == 200){
+							layer.msg(res.message,{icon:1});
+							reloadData(1);
+						}
+						layer.close(load);
+		            });
+				});
+			}
+
+			$('#addBtn').on('click', function() {
+				layer.open({
+					type:2,
+					title:'新增数据源',
+					area: ['520px', '460px'],
+					content:'sourceAdd.html'
+				});
+			});
+			
+			function editSource(sourceId){
+				layer.open({
+					type:2,
+					title:'编辑数据源',
+					area: ['520px', '460px'],
+					content:'sourceEdit.html?sourceId='+sourceId
+				});
+			}
+			
+			$('#searchBtn').on('click', function() {
+				reloadData(1);
+			});
+			
+			$('#resetBtn').on('click', function() {
+				clearData();
+				reloadData(1);
+			});
+		});
+	</script>
+</body>
+
+</html>

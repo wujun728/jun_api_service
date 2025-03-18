@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html >
+<head>
+	<meta charset="utf-8">
+    <title>编辑API</title>
+    <meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+
+	<link rel="stylesheet" href="../../../style/plugins/layui-v2.5.5/layui/css/main/layui.css" media="all" />
+	<link rel="stylesheet" href="../../../style/css/main/global.css" media="all">
+	<link rel="stylesheet" href="../../../style/css/table.css" />
+	<link rel="stylesheet" type="text/css" href="../../../style/plugins/multiSelect/css/multiSelect.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<style>
+		.group-select .layui-unselect.layui-form-select{
+			float: left;
+			width: 48% !important;
+			margin-left:2% ;
+		}
+	</style>
+</head>
+<body>
+	<div style="margin: 15px;padding-right: 30px;">
+		<form class="layui-form" id="form">
+			<div class="layui-form-item">
+				<label class="layui-form-label">数据库</label>
+				<div class="layui-input-block">
+					<input type="text" id="databaseNameShow" disabled autocomplete="off" class="layui-input">
+					<input type="text" name="databaseName" id="databaseName"
+					style="display: none;"
+					 disabled autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">选择表<i class="color-red">*</i></label>
+				<div class="layui-input-block lineHeight38">
+					<select name="tableName" id="tableName" lay-filter="tableName" 
+					lay-verify="required">
+						
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">接口分组<i class="color-red">*</i></label>
+				<div class="layui-input-block group-select">
+					<input type="text" name="groupName" 
+					style="width: 48%;display: inline;float:left;"
+					id="groupName" lay-verify="required" autocomplete="off" class="layui-input">
+					<select id="groupSelect"  lay-filter="groupSelect">
+						<option value="">选择分组</option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">操作类型<i class="color-red">*</i></label>
+				<div class="layui-input-block lineHeight38">
+					<select name="opType" id="opType" lay-filter="opType" lay-verify="required">
+						<option value="SELECT">查询列表</option>
+						<option value="SELECT_ONE">查询单个</option>
+						<option value="INSERT">新增</option>
+						<option value="UPDATE">修改</option>
+						<option value="DELETE">删除</option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">接口名称<i class="color-red">*</i></label>
+				<div class="layui-input-block">
+					<input type="text" name="apiName" id="apiName" lay-verify="required" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">接口类型<i class="color-red">*</i></label>
+				<div class="layui-input-block lineHeight38">
+					<select name="apiType" id="apiType" lay-verify="required">
+						<option value="GET">GET</option>
+						<option value="POST">POST</option>
+						<option value="PUT">PUT</option>
+						<option value="DELETE">DELETE</option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">接口地址<i class="color-red">*</i></label>
+				<div class="layui-input-block">
+					<input type="text" name="apiPath" id="apiPath" lay-verify="required" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">唯一校验</label>
+				<div class="layui-input-block">
+					<div id="verifyColumn" class="multi_select">
+						
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item" id="pageFlagdiv" style="display: none;">
+				<label class="layui-form-label">是否分页</label>
+				<div class="layui-input-block">
+					<input type="radio" name="pageFlag" lay-filter="pageFlag" value="Y" title="是">
+					<input type="radio" name="pageFlag" lay-filter="pageFlag" value="N" title="否">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">备注</label>
+				<div class="layui-input-block">
+					<input type="text" name="remark" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item" style="text-align: center;">
+				<div class="layui-input-block" style="margin-left:0px;">
+					<button class="layui-btn" type="button" lay-submit="submitForm" lay-filter="submitForm">保存</button>
+					<button type="button" class="layui-btn layui-btn-primary" id="cancerBtn">取消</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script type="text/javascript" src="../../../style/plugins/layui-v2.5.5/layui/layui.js"></script>
+	<script type="text/javascript" src="../../../style/js/validator.js"></script>
+	<script type="text/javascript" src="../../../style/js/base.js"></script>
+	<script type="text/javascript" src="../../../style/js/api.js"></script>
+	<script type="text/javascript" src="../../../style/js/sql.js"></script>
+	<script type="text/javascript" src="../../../style/plugins/multiSelect/js/jquery.min.js"></script>
+	<script type="text/javascript" src="../../../style/plugins/multiSelect/multiSelect.js"></script>
+	<script>
+		layui.config({
+			base: '../../../style/js/'
+		});
+		layui.use(['form','layer','laydate','validator'], function() {
+			var form = layui.form,
+			layer = layui.layer,
+			$ = layui.jquery;
+			var validator = layui.validator;
+				
+			var apiId = getUrlParam("apiId");
+			var sourceId = '';
+
+			var apiData = '';
+			var database = '';
+			ajaxRequest($, request.urls.apiInfoDetail, apiId, {}, function(res){
+				if(res.code == 200){
+					apiData = res.data;
+					$.each(res.data, function(val,i) {
+						if(val == 'pageFlag'){
+							$("#form").find('*[name="' + val + '"][type="radio"][value="'+res.data[val]+'"]').prop("checked",true);
+						}else{
+							$("#form").find('*[name="' + val + '"]').val(res.data[val]);
+						}
+					});
+					sourceId = apiData.sourceId?apiData.sourceId:'';
+					var sourceName = apiData.sourceName?apiData.sourceName:'默认数据源';
+					$("#databaseNameShow").val(apiData.databaseName+"("+sourceName+")");
+					database = apiData.databaseName;
+					showGroups(sourceId,apiData.databaseName);
+					showTables(sourceId, apiData.databaseName, apiData.tableName);
+					
+					showTableColumn(apiData.tableName, apiData.paramVos[0].paramVos);
+					
+					if(apiData.opType != 'SELECT'){
+						$("#pageFlagdiv").hide();
+					}else{
+						$("#pageFlagdiv").show();
+					}
+					form.render();
+				}
+			});
+			
+			function showTables(sourceId, database, tableName){
+				ajaxRequest($, request.urls.dbTableList,'',{sourceId: sourceId,database:database}, function(res){
+					if(res.code == 200 && res.data && res.data.length>0){
+						var html='<option value="">选择表</option>';
+						$.each(res.data,function(index,item){
+							var sel = '';
+							if(tableName == item.tableName){
+								sel = ' selected="selected"'; 
+							}
+							html+='<option value="'+item.tableName+'" label="'+item.tableComment+'" '+sel+'>'+item.tableComment+'('+item.tableName+')'+'</option>';
+						});
+						$("#tableName").html(html);
+						
+						form.render();
+					}
+				});
+			}
+			
+			function showGroups(sourceId,databaseName){
+				ajaxRequest($, request.urls.apiGroups, '', {sourceId:sourceId,databaseName:databaseName}, function(res){
+					if(res.code == 200){
+						if(res.data && res.data.length>0){
+							var html='<option value="">选择分组</option>';
+							$.each(res.data,function(index,item){
+								html+='<option value="'+item+'">'+item+'</option>';
+							});
+							$("#groupSelect").html(html);
+							form.render();
+						}
+					}
+				});
+			}
+			
+			form.on('select(groupSelect)', function(obj){
+				$("#groupName").val(obj.value);
+			});
+			
+			form.on('radio(pageFlag)', function(obj){
+				var val = obj.value;
+				var apiName = $("#apiName").val();
+				if(val == 'Y'){
+					if(apiName && apiName.indexOf("分页")==-1){
+						$("#apiName").val("分页"+apiName);
+					}
+				}else{
+					if(apiName && apiName.indexOf("分页")!=-1){
+						$("#apiName").val(apiName.replace("分页",""));
+					}
+				}
+			});
+			
+			form.on('select(tableName)', function(obj){
+				var comment = $(obj.elem).find("option:selected").attr("label");
+				$("#groupName").val(comment);
+				
+				var opType = $("#opType").find("option:selected").html();
+				$("#apiName").val(opType+$("#groupName").val());
+				var apiPath = toUnderscoreToCamelCase(obj.value);
+				var opTypeVal = $("#opType").val();
+				if(opTypeVal=='SELECT'){
+					apiPath = apiPath+'s';
+				}
+				$("#apiPath").val(apiPath);
+				
+				if(opTypeVal == 'SELECT'){
+					$("#cratePagediv").show();
+					$("#createPage").attr("title", $("#groupName").val()+"列表");
+				}else if(opTypeVal == 'INSERT'){
+					$("#cratePagediv").show();
+					$("#createPage").attr("title", "新增"+$("#groupName").val());
+				}else if(opTypeVal == 'UPDATE'){
+					$("#cratePagediv").show();
+					$("#createPage").attr("title", "编辑"+$("#groupName").val());
+				}else{
+					$("#cratePagediv").hide();
+					$("#createPage").prop("checked",false);
+				}
+				
+				form.render();
+				
+				if(obj.value){
+					if(opTypeVal == 'INSERT' || opTypeVal == 'UPDATE'){
+						showTableColumn(obj.value);
+						$("#verifyColumnDiv").show();
+					}else{
+						$("#verifyColumnDiv").hide();
+					}
+				}
+			});
+			
+			
+			form.on('select(opType)', function(obj){
+				$.each(opTypes,function(index,item){
+					if(obj.value == item.key){
+						$("#apiType").val(item.type);
+						
+						var opType = $("#opType").find("option:selected").html();
+						$("#apiName").val(opType+$("#groupName").val());
+						
+						var tableName = $("#tableName").val();
+						var apiPath = toUnderscoreToCamelCase(tableName);
+						if(obj.value=='SELECT'){
+							apiPath = apiPath+'s';
+						}
+						$("#apiPath").val(apiPath);
+						
+						if(obj.value != 'SELECT'){
+							$("#pageFlagdiv").hide();
+						}else{
+							$("#pageFlagdiv").show();
+						}
+						
+						if(obj.value == 'SELECT'){
+							$("#cratePagediv").show();
+							$("#createPage").attr("title", groupName+"列表");
+						}else if(obj.value == 'INSERT'){
+							$("#cratePagediv").show();
+							$("#createPage").attr("title", "新增"+groupName);
+						}else if(obj.value == 'UPDATE'){
+							$("#cratePagediv").show();
+							$("#createPage").attr("title", "编辑"+groupName);
+						}else{
+							$("#cratePagediv").hide();
+							$("#createPage").prop("checked",false);
+						}
+						form.render();
+						
+						if(tableName){
+							if(obj.value == 'INSERT' || obj.value == 'UPDATE'){
+								showTableColumn(tableName);
+								$("#verifyColumnDiv").show();
+							}else{
+								$("#verifyColumnDiv").hide();
+							}
+						}
+					}
+				});
+			});
+			
+			function showTableColumn(tableName, paramVos){
+				var selected = [];
+				if(paramVos && paramVos.length>0){
+					$.each(paramVos,function(index,item){
+						if(item.uniqueVerify){
+							selected.push({
+								name: item.columnComment+"("+item.columnName+")",
+								value: item.columnName
+							});
+						}
+					});
+				}
+				//获取属性
+				ajaxRequest($, request.urls.tableEntityInfo,'',{
+					sourceId: sourceId,
+					database:database,
+					tableName: tableName
+				}, function(res){
+					if(res.code==200){
+						var datas = [];
+						$.each(res.data.entityAttrs,function(index,item){
+							var obj = {
+								name: item.columnComment+"("+item.columnName+")",
+								value: item.columnName
+							};
+							datas.push(obj);
+						});
+						showMultiSelect(datas,selected);
+					}
+				});
+			}
+
+				
+			//监听提交
+			form.on('submit(submitForm)', function(data) {
+				var result = data.field;
+				result.apiId = apiId;
+				result.sourceId = sourceId;
+				
+				var createPage = $("#createPage").prop("checked")?'Y':'N';
+				result.createPage = createPage;
+				result.verifyColumns = $("#verifyColumn").multiVal();
+				
+				var load = layer.load(2);
+				ajaxRequest($, request.urls.apiInfoEdit, '', result, function(res){
+	            		if(res.code == 200){
+							layer.msg(res.message,{icon:1,time:500},function(){
+								$('#cancerBtn').click();
+								if(window.parent.reloadParent){
+									window.parent.reloadParent();
+								}
+							});
+						}
+						layer.close(load);
+	            });
+				
+				return false;
+			});
+			
+			$('#cancerBtn').on('click',function(){
+				var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+				parent.layer.close(index);
+			});
+			
+			showMultiSelect([]);
+			
+			function showMultiSelect(data,selected){
+				$("#verifyColumn").multiSelect({
+					label: '选择字段',  // 可省略
+					placeholder:'请选择字段...', // 可省略
+					style:{  // 可省略
+						height:'38px',
+						lineHeight:'38px',
+					},
+					data:data,
+					selected:selected,
+					onload:function(data){
+					},
+					onchange:function(data){
+					}
+				});
+			}
+			
+		});
+	</script>
+</body>
+</html>
