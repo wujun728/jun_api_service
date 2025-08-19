@@ -2,7 +2,7 @@ package io.github.wujun728.amis.api;
 
 
 import cn.hutool.core.map.MapUtil;
-import com.alibaba.fastjson.JSONObject;
+import cn.hutool.json.JSONObject;
 import io.github.wujun728.common.base.Result;
 import io.github.wujun728.db.record.Page;
 import io.github.wujun728.rest.util.HttpRequestUtil;

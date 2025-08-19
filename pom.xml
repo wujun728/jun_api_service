@@ -16,8 +16,6 @@
 	</properties>
 
 	<modules>   
-		<module>jun_api_online_core</module>
-		<module>jun_api_online_demo</module>
 		<module>jun_api_online_groovy</module>
 	</modules>
 

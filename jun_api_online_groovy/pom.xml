@@ -30,26 +30,12 @@
     </properties>
 
     <dependencies>
-        <!--<dependency>
-            <groupId>io.github.wujun728</groupId>
-            <artifactId>jun-db-jdbctemplate</artifactId>
-            <version>1.0.22</version>
-        </dependency>-->
+
         <dependency>
-            <groupId>io.github.wujun728</groupId>
-            <artifactId>jun-api-engine</artifactId>
-            <version>1.0.22</version>
-        </dependency>
-        <!--<dependency>
             <groupId>io.github.wujun728</groupId>
             <artifactId>jun-groovy-api-spring-boot-starter</artifactId>
-            <version>1.0.22</version>
+            <version>1.0.23</version>
         </dependency>
-        <dependency>
-            <groupId>io.github.wujun728</groupId>
-            <artifactId>jun-api-engine-spring-boot-starter</artifactId>
-            <version>1.0.22</version>
-        </dependency>-->
         <!--thymeleaf默认使用html5规则标签必须闭合等 使用次此包正常解析-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -303,6 +289,58 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- 配置编译插件-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
+            </plugin>
+            <!-- 配置资源文件插件-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <encoding>utf-8</encoding>
+                    <useDefaultDelimiters>true</useDefaultDelimiters>
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>eot</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>svg</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>jks</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>woff</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>woff2</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
+                </configuration>
+            </plugin>
+            <!-- 配置Jar打包插件-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
             </plugin>
         </plugins>
     </build>
